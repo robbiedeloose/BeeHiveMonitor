@@ -1,4 +1,17 @@
 /*
+Keys & URLS data.sparkfun.com
+
+title: BeeHive
+outputUrl: http://data.sparkfun.com/output/1n6YvZb9QYsEDamb2pmM
+inputUrl: http://data.sparkfun.com/input/1n6YvZb9QYsEDamb2pmM
+manageUrl: http://data.sparkfun.com/streams/1n6YvZb9QYsEDamb2pmM
+publicKey: 1n6YvZb9QYsEDamb2pmM
+privateKey: 0mjXKloeVXCNxwgKVjgZ
+deleteKey:"KVpjMLrkGjUOv2jREVj1
+
+*/
+
+/*
   Web client
 
   This sketch connects to a website (http://www.google.com)
