@@ -1,13 +1,7 @@
 /*
-Keys & URLS data.sparkfun.com
 
-title: BeeHive
-outputUrl: http://data.sparkfun.com/output/1n6YvZb9QYsEDamb2pmM
-inputUrl: http://data.sparkfun.com/input/1n6YvZb9QYsEDamb2pmM
-manageUrl: http://data.sparkfun.com/streams/1n6YvZb9QYsEDamb2pmM
-publicKey: 1n6YvZb9QYsEDamb2pmM
-privateKey: 0mjXKloeVXCNxwgKVjgZ
-deleteKey:"KVpjMLrkGjUOv2jREVj1
+genuino mkr1000n --> wifi101 library
+dht22 temp an humidity sensor
 
 */
 
@@ -36,8 +30,13 @@ deleteKey:"KVpjMLrkGjUOv2jREVj1
 #include <SPI.h>
 #include <WiFi101.h>
 
-char ssid[] = "telenet-replica"; //  your network SSID (name)
-char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
+//char ssid[] = "telenet-replica"; //  your network SSID (name)
+//char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
+
+// zee
+char ssid[] = "telenet-224D7"; //  your network SSID (name)
+char pass[] = "Zcmssfbu3dvj";    // your network password (use for WPA, or use as key for WEP)
+
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
 int status = WL_IDLE_STATUS;
