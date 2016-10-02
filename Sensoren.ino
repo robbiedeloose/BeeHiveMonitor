@@ -1,9 +1,8 @@
 void readSensors () {
 
   Serial.println();
-  Serial.print("Requesting temperature...");
+
   sensors.requestTemperatures(); // Send the command to get temperatures
-  Serial.println("DONE");
 
   temp1 = sensors.getTempCByIndex(0);
   temp2 = sensors.getTempCByIndex(1);
@@ -40,12 +39,12 @@ void readSensors () {
 
   Serial.print("Humidity: ");
   Serial.print(humidity);
-  Serial.print(" %\t");
+  Serial.println("%");
   Serial.print("Temperature: ");
   Serial.print(temp);
-  Serial.print(" *C ");
+  Serial.println(" *C ");
   Serial.print("Heat index: ");
   Serial.print(heatIndex);
-  Serial.print(" *C ");
+  Serial.println(" *C ");
 }
 

@@ -29,24 +29,31 @@ DallasTemperature sensors(&ourWire); // Tell Dallas Temperature Library to use o
 
 DHT dht(DHTPIN, DHTTYPE);
 
+/*  Includes and variables for   */
+#include <Wire.h>
+float windSnelheid = 0;
+int windRichting = 0;
+
 /*  Variables for storing sensor data  */
 /*DHT*/
-  float humidity = 0;
-  float temp = 0;
-  float heatIndex = 0;
+float humidity = 0;
+float temp = 0;
+float heatIndex = 0;
 /*DS20*/
- float temp1 = 0;
- float temp2 = 0;
+float temp1 = 0;
+float temp2 = 0;
 
 void setup() {
 
-  
+
   Serial.begin(9600); /*  Start Serial  */
-  while (!Serial) {
-    ;
-  }
-  
-  dht.begin(); /*  Start DHT22 sensor  */   
+  //  while (!Serial) {
+  //    ;
+  //  }
+
+  Wire.begin();        // join i2c bus for wind sensor
+
+  dht.begin(); /*  Start DHT22 sensor  */
   sensors.begin(); /*  Start up the DallasTemperature library  */
   initiateWifi(); /*  Start Wifi Connection  */
 
@@ -62,13 +69,14 @@ void loop() {
 
   /*  Read sensor data from DHT22 and MD20  */
   readSensors();
+  readWind();
 
-  /*  write sensor data to serial  */
-  
+  /*  write sensor data to serial or sd card  */
+
 
   /*  Post data to web service   */
   postDataToSparkFun()  ;
 
-/* Wait for 10 seconds. Needs to be repalced by a sleep mechanism  */
+  /* Wait for 10 seconds. Needs to be repalced by a sleep mechanism  */
   delay(10000);
 }

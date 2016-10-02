@@ -26,7 +26,7 @@ void postDataToSparkFun()
     client.print("&");
     client.print("humidity");
     client.print("=");
-    client.print(humidity);
+    client.print("-");
 
     client.print("&");
     client.print("temp_outside");
@@ -42,6 +42,37 @@ void postDataToSparkFun()
     client.print("temp_2");
     client.print("=");
     client.print(temp2);
+
+    client.print("&");
+    client.print("humidity_outside");
+    client.print("=");
+    client.print(humidity);
+
+    client.print("&");
+    client.print("rainfall");
+    client.print("=");
+    client.print("-");
+
+    client.print("&");
+    client.print("winddirection");
+    client.print("=");
+    client.print(windRichting);
+
+    client.print("&");
+    client.print("windspeed");
+    client.print("=");
+    client.print(windSnelheid);
+
+    client.print("&");
+    client.print("battery");
+    client.print("=");
+    client.print("-");
+
+    client.print("&");
+    client.print("weight");
+    client.print("=");
+    client.print("-");
+    
 
     client.println(" HTTP/1.1");
     client.print("Host: ");
