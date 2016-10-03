@@ -2,6 +2,7 @@
 #include <RTCZero.h>
 RTCZero rtc;
 
+
 /* Change these values to set the current initial time */
 const byte seconds = 0;
 const byte minutes = 00;
@@ -66,15 +67,8 @@ int i = 0;
 
 void setup() {
 
-  /************/
-  rtc.begin();
-  rtc.setTime(hours, minutes, seconds);
-  rtc.setDate(day, month, year);
-  rtc.setAlarmTime(0, 0, 0);
-  rtc.enableAlarm(rtc.MATCH_SS);
-  rtc.attachInterrupt(alarmMatch);
-  
-  /************/
+  setRtc();
+
   pinMode(LED, OUTPUT);
   pinMode(DEBUGPIN, INPUT_PULLUP);
 
@@ -83,6 +77,7 @@ void setup() {
 
   Serial.begin(9600); /*  Start Serial  */
   delay(1000);
+
   //  while (!Serial) {
   //    ;
   //  }
@@ -112,9 +107,12 @@ void loop() {
     delay(2000);
     readSensors();
     readWind();
-    postDataToSparkFun()  ;
-    process = false;
-    rtc.standbyMode();
+    postDataToSparkFun();
+    if (!debug) {
+      Serial.println(debug);
+      process = false;
+      rtc.standbyMode();
+    }
   }
 }
 
