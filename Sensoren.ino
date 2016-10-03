@@ -1,7 +1,5 @@
 void readSensors () {
 
-  Serial.println();
-
   sensors.requestTemperatures(); // Send the command to get temperatures
 
   temp1 = sensors.getTempCByIndex(0);

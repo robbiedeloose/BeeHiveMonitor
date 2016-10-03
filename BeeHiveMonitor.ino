@@ -43,10 +43,20 @@ float heatIndex = 0;
 float temp1 = 0;
 float temp2 = 0;
 
-void setup() {
+boolean debug = true;
+#define LED 6
+#define DEBUGPIN 7
+int i = 0;
 
+void setup() {
+  pinMode(LED, OUTPUT);
+  pinMode(DEBUGPIN,INPUT_PULLUP);
+
+  setDebug();
+  debugMessage(2);
 
   Serial.begin(9600); /*  Start Serial  */
+  delay(1000);
   //  while (!Serial) {
   //    ;
   //  }
@@ -60,6 +70,8 @@ void setup() {
 }
 
 void loop() {
+
+  debugMessage(3);
 
   /*  Check incomming HTTP:  */
   while (client.available()) {
@@ -80,3 +92,28 @@ void loop() {
   /* Wait for 10 seconds. Needs to be repalced by a sleep mechanism  */
   delay(10000);
 }
+
+void debugMessage(int x) {
+  if (debug) {
+    i = 0;
+    while (i < x)
+    {
+      i++;
+      digitalWrite(LED, HIGH);    // Toggle LED
+      delay(100);
+      digitalWrite(LED, LOW);    // Toggle LED
+      delay(200);
+    }
+  }
+}
+
+
+void setDebug(){
+  if (digitalRead(DEBUGPIN) == LOW){
+    debug = true;
+  }
+  else{
+    debug = false;
+  }
+}
+
