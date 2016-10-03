@@ -1,3 +1,17 @@
+#include <RTCZero.h>
+RTCZero rtc;
+
+/* Change these values to set the current initial time */
+const byte seconds = 0;
+const byte minutes = 00;
+const byte hours = 17;
+
+/* Change these values to set the current initial date */
+const byte day = 17;
+const byte month = 11;
+const byte year = 15;
+
+
 /* Includes and variables for Wifi  */
 #include <SPI.h>
 #include <WiFi101.h>
