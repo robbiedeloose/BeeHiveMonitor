@@ -1,3 +1,4 @@
+/*  Includes en variables for sleep  */
 #include <RTCZero.h>
 RTCZero rtc;
 
@@ -11,6 +12,7 @@ const byte day = 17;
 const byte month = 11;
 const byte year = 15;
 
+boolean process = true;
 
 /* Includes and variables for Wifi  */
 #include <SPI.h>
@@ -63,11 +65,21 @@ boolean debug = true;
 int i = 0;
 
 void setup() {
+
+  /************/
+  rtc.begin();
+  rtc.setTime(hours, minutes, seconds);
+  rtc.setDate(day, month, year);
+  rtc.setAlarmTime(0, 0, 0);
+  rtc.enableAlarm(rtc.MATCH_SS);
+  rtc.attachInterrupt(alarmMatch);
+  
+  /************/
   pinMode(LED, OUTPUT);
-  pinMode(DEBUGPIN,INPUT_PULLUP);
+  pinMode(DEBUGPIN, INPUT_PULLUP);
 
   setDebug();
-  debugMessage(2);
+  debugMessage(2, 500);
 
   Serial.begin(9600); /*  Start Serial  */
   delay(1000);
@@ -85,7 +97,8 @@ void setup() {
 
 void loop() {
 
-  debugMessage(3);
+  debugMessage(1, 500);
+  delay(1000);
 
   /*  Check incomming HTTP:  */
   while (client.available()) {
@@ -94,27 +107,30 @@ void loop() {
   }
 
   /*  Read sensor data from DHT22 and MD20  */
-  readSensors();
-  readWind();
-
-  /*  write sensor data to serial or sd card  */
-
-
-  /*  Post data to web service   */
-  postDataToSparkFun()  ;
-
-  /* Wait for 10 seconds. Needs to be repalced by a sleep mechanism  */
-  delay(10000);
+  if (process) {
+    debugMessage(5, 100);
+    delay(2000);
+    readSensors();
+    readWind();
+    postDataToSparkFun()  ;
+    process = false;
+    rtc.standbyMode();
+  }
 }
 
-void debugMessage(int x) {
+void alarmMatch()
+{
+  process = true;
+}
+
+void debugMessage(int x, int y) {
   if (debug) {
     i = 0;
     while (i < x)
     {
       i++;
       digitalWrite(LED, HIGH);    // Toggle LED
-      delay(100);
+      delay(y);
       digitalWrite(LED, LOW);    // Toggle LED
       delay(200);
     }
@@ -122,11 +138,11 @@ void debugMessage(int x) {
 }
 
 
-void setDebug(){
-  if (digitalRead(DEBUGPIN) == LOW){
+void setDebug() {
+  if (digitalRead(DEBUGPIN) == LOW) {
     debug = true;
   }
-  else{
+  else {
     debug = false;
   }
 }
