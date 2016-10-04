@@ -4,14 +4,13 @@ RTCZero rtc;
 
 
 /* Change these values to set the current initial time */
-const byte seconds = 0;
-const byte minutes = 00;
-const byte hours = 17;
-
+byte seconds = 0;
+byte minutes = 00;
+byte hours = 17;
 /* Change these values to set the current initial date */
-const byte day = 17;
-const byte month = 11;
-const byte year = 15;
+byte day = 17;
+byte month = 11;
+int year = 15;
 
 boolean process = true;
 
@@ -87,6 +86,9 @@ void setup() {
   dht.begin(); /*  Start DHT22 sensor  */
   sensors.begin(); /*  Start up the DallasTemperature library  */
   initiateWifi(); /*  Start Wifi Connection  */
+
+ getTimeFromWeb(client);
+  setRtc();
 
 }
 
