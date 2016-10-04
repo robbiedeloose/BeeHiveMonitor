@@ -4,18 +4,22 @@ void readSensors () {
 
   temp1 = sensors.getTempCByIndex(0);
   temp2 = sensors.getTempCByIndex(1);
+  if (debug) {
+    Serial.println("Debug DS18LS20 Sensors:");
+    Serial.print("Device 1 (index 0) = ");
+    Serial.print(temp1);
+    Serial.println(" Degrees C");
 
-  Serial.print("Device 1 (index 0) = ");
-  Serial.print(temp1);
-  Serial.println(" Degrees C");
-
-  Serial.print("Device 1 (index 1) = ");
-  Serial.print(temp2);
-  Serial.println(" Degrees C");
-  
+    Serial.print("Device 1 (index 1) = ");
+    Serial.print(temp2);
+    Serial.println(" Degrees C");
+    Serial.println();
+  }
 
 
   /*  DHT Sensor  */
+
+
 
   // Wait a few seconds between measurements.
   delay(2000);
@@ -34,15 +38,18 @@ void readSensors () {
 
   // Compute heat index in Celsius (isFahreheit = false)
   heatIndex = dht.computeHeatIndex(temp, humidity, false);
-
-  Serial.print("Humidity: ");
-  Serial.print(humidity);
-  Serial.println("%");
-  Serial.print("Temperature: ");
-  Serial.print(temp);
-  Serial.println(" *C ");
-  Serial.print("Heat index: ");
-  Serial.print(heatIndex);
-  Serial.println(" *C ");
+  if (debug) {
+    Serial.println("Debug DHT22 Sensors:");
+    Serial.print("Humidity: ");
+    Serial.print(humidity);
+    Serial.println("%");
+    Serial.print("Temperature: ");
+    Serial.print(temp);
+    Serial.println(" *C ");
+    Serial.print("Heat index: ");
+    Serial.print(heatIndex);
+    Serial.println(" *C ");
+    Serial.println();
+  }
 }
 
