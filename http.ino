@@ -56,23 +56,38 @@ void postDataToSparkFun()
     client.print("&");
     client.print("winddirection");
     client.print("=");
-    client.print(windRichting);
+    if (windMeter == 0) {
+      client.print("-");
+    }
+    else {
+      client.print(windRichting);
+    }
 
     client.print("&");
     client.print("windspeed");
     client.print("=");
-    client.print(windSnelheid);
+    if (windMeter == 0) {
+      client.print("-");
+    }
+    else {
+      client.print(windSnelheid);
+    }
 
     client.print("&");
     client.print("battery");
     client.print("=");
-    client.print("-");
+    client.print(batteryVoltage);
 
     client.print("&");
     client.print("weight");
     client.print("=");
-    client.print("-");
-    
+    if (scale == 0) {
+      client.print("-");
+    }
+    else {
+      client.print("-");
+    }
+
 
     client.println(" HTTP/1.1");
     client.print("Host: ");

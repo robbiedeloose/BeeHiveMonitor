@@ -16,11 +16,7 @@ void readSensors () {
     Serial.println();
   }
 
-
   /*  DHT Sensor  */
-
-
-
   // Wait a few seconds between measurements.
   delay(2000);
 

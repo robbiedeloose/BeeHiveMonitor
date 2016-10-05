@@ -1,7 +1,13 @@
+/*
+ * ToDo List:
+ * Battery monitor
+ * sd card
+ * design pcb
+ */
+
 /*  Includes en variables for sleep  */
 #include <RTCZero.h>
 RTCZero rtc;
-
 
 /* Change these values to set the current initial time */
 byte seconds = 0;
@@ -53,6 +59,7 @@ int windRichting = 0;
 /*  Variables for storing sensor data  */
 /*DHT*/
 float humidity = 0;
+
 float temp = 0;
 float heatIndex = 0;
 /*DS20*/
@@ -64,12 +71,19 @@ boolean debug = true;
 #define DEBUGPIN 7
 int i = 0;
 
+#define BATTERYVOLTAGE A0
+float batteryVoltage= 0;
+
+/*  Config parameters  */
+byte windMeter = 0;
+byte scale = 0;
+
 void setup() {
 
-  setRtc();
 
   pinMode(LED, OUTPUT);
   pinMode(DEBUGPIN, INPUT_PULLUP);
+  pinMode (BATTERYVOLTAGE, INPUT);
 
   setDebug();
   debugMessage(2, 500);
@@ -87,9 +101,8 @@ void setup() {
   sensors.begin(); /*  Start up the DallasTemperature library  */
   initiateWifi(); /*  Start Wifi Connection  */
 
- getTimeFromWeb(client);
+  getTimeFromWeb(client);
   setRtc();
-
 }
 
 void loop() {
@@ -109,6 +122,7 @@ void loop() {
     delay(2000);
     readSensors();
     readWind();
+    readBattery();
     postDataToSparkFun();
     if (!debug) {
       Serial.println(debug);
