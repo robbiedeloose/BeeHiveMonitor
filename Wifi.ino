@@ -12,7 +12,7 @@ void initiateWifi() {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
     status = WiFi.begin(ssid, pass);
-    delay(10000); // wait 10 seconds for connection:
+    delay(5000); // wait 10 seconds for connection:
   }
   Serial.println("Connected to wifi");
   

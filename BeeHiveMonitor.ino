@@ -1,9 +1,9 @@
 /*
- * ToDo List:
- * Battery monitor
- * sd card
- * design pcb
- */
+   ToDo List:
+   Battery monitor
+   sd card
+   design pcb
+*/
 
 /*  Includes en variables for sleep  */
 #include <RTCZero.h>
@@ -66,13 +66,13 @@ float heatIndex = 0;
 float temp1 = 0;
 float temp2 = 0;
 
-boolean debug = true;
+boolean debug = false;
 #define LED 6
 #define DEBUGPIN 7
 int i = 0;
 
 #define BATTERYVOLTAGE A0
-float batteryVoltage= 0;
+float batteryVoltage = 0;
 
 /*  Config parameters  */
 byte windMeter = 0;
@@ -118,18 +118,27 @@ void loop() {
 
   /*  Read sensor data from DHT22 and MD20  */
   if (process) {
+
     debugMessage(5, 100);
     delay(2000);
     readSensors();
     readWind();
     readBattery();
+    Serial.println("Going to high power");
+    //WiFi.noLowPowerMode();
+    delay(2000);
     postDataToSparkFun();
-    if (!debug) {
-      Serial.println(debug);
+    delay(1000);
+    Serial.println("Going to low power");
+    WiFi.lowPowerMode();
+    if (debug = false) {
+      Serial.println("Debug mode");
       process = false;
       rtc.standbyMode();
     }
+    Serial.println("end process");
   }
+  Serial.println("end loop");
 }
 
 void alarmMatch()
@@ -155,9 +164,11 @@ void debugMessage(int x, int y) {
 void setDebug() {
   if (digitalRead(DEBUGPIN) == LOW) {
     debug = true;
+    Serial.println("Debug is enabled!");
   }
   else {
     debug = false;
+    Serial.println("Debug is disabled!");
   }
 }
 

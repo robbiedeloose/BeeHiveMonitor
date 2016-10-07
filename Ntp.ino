@@ -52,7 +52,7 @@ void getTimeFromWeb (Client &client)
 
 hours = hours + 2; // add 2 hours to get to right time zone
 if (hours >= 24){
-  hours = hours - 24); // adjust for 22 & 23 
+  hours = hours - 24; // adjust for 22 & 23 
 }
 
 Serial.println("Time:");
