@@ -1,114 +1,87 @@
-/*
-   ToDo List:
-   Battery monitor
-   sd card
-   design pcb
-*/
-
-/*  Includes en variables for sleep  */
-#include <RTCZero.h>
-RTCZero rtc;
-
-/* Change these values to set the current initial time */
-byte seconds = 0;
-byte minutes = 00;
-byte hours = 17;
-/* Change these values to set the current initial date */
-byte day = 17;
-byte month = 11;
-int year = 15;
-
-boolean process = true;
-
-/* Includes and variables for Wifi  */
+#include <Wire.h> // I2C library
+#include <RTCZero.h> // RealTimeClock for sleep
 #include <SPI.h>
 #include <WiFi101.h>
+#include <DHT.h> // for DHT Sensors
+#include <OneWire.h> // for DS18 sensors
+#include <DallasTemperature.h>  // for DS18 sensors
 
+#define ONE_WIRE_BUS 3 // Digital pin for OneWire sensor
+#define DHTPIN 2     // what digital pin DHT is connected to
+#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+#define LED 6 // Led Pin
+#define DEBUGPIN 7 // pin for debug switch
+#define BATTERYVOLTAGE A0 // pin for voltage divider
+
+WiFiClient client; // network client
+DHT dht(DHTPIN, DHTTYPE); // DHT instance
+RTCZero rtc; // real time clock instance
+OneWire ourWire(ONE_WIRE_BUS); // Set up a oneWire instance to communicate with any OneWire device
+DallasTemperature sensors(&ourWire); // Tell Dallas Temperature Library to use oneWire Library
+
+////// Config variables //////
+
+// Wifi
 char ssid[] = "telenet-replica"; //  your network SSID (name)
 char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
-int status = WL_IDLE_STATUS;
-WiFiClient client;
-
-/* Includes and variables for Phant Stuff */
+// Phant
 const String publicKey = "1n6YvZb9QYsEDamb2pmM";
 const String privateKey = "0mjXKloeVXCNxwgKVjgZ";
 char server[] = "data.sparkfun.com"; // Remote host site
 
-/*  Includes and variables for DS temp sensor  */
-#include <OneWire.h>
-#include <DallasTemperature.h>
-#define ONE_WIRE_BUS 3 // Digital pin for OneWire sensor
-
-OneWire ourWire(ONE_WIRE_BUS); // Set up a oneWire instance to communicate with any OneWire device
-DallasTemperature sensors(&ourWire); // Tell Dallas Temperature Library to use oneWire Library
-
-/*  Includes and variables for DHT temp & humidity sensor  */
-#include <DHT.h>
-#define DHTPIN 2     // what digital pin we're connected to
-#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
-
-DHT dht(DHTPIN, DHTTYPE);
-
-/*  Includes and variables for   */
-#include <Wire.h>
-float windSnelheid = 0;
-int windRichting = 0;
-
-/*  Variables for storing sensor data  */
-/*DHT*/
-float humidity = 0;
-
-float temp = 0;
-float heatIndex = 0;
-/*DS20*/
-float temp1 = 0;
-float temp2 = 0;
-
-boolean debug = false;
-#define LED 6
-#define DEBUGPIN 7
-int i = 0;
-
-#define BATTERYVOLTAGE A0
-float batteryVoltage = 0;
-
-/*  Config parameters  */
+// Sensors
 byte windMeter = 0;
 byte scale = 0;
 
+////// Variables //////
+
+// WiFi status
+int status = WL_IDLE_STATUS;
+// Date and Time
+byte seconds = 0;
+byte minutes = 00;
+byte hours = 17;
+byte day = 17;
+byte month = 11;
+int year = 15;
+// sleep & debug
+boolean sleep = false;
+boolean debug = false;
+int i = 0;
+// Sensors
+float windSnelheid = 0; // second arduino
+int windRichting = 0; // second arduino
+float humidity = 0; //DHT
+float temp = 0; // DHT
+float heatIndex = 0; //DHT
+float temp1 = 0; //DS2-1
+float temp2 = 0; //DS2-2
+float batteryVoltage = 0;
+
 void setup() {
-
-
+  //Set pinmodes
   pinMode(LED, OUTPUT);
   pinMode(DEBUGPIN, INPUT_PULLUP);
   pinMode (BATTERYVOLTAGE, INPUT);
 
+  Serial.begin(9600); // Start Serial
+  Wire.begin();       // join i2c bus for wind sensor
+  dht.begin();        // Start DHT22 sensor
+  sensors.begin();    // Start up the DallasTemperature library
+  initiateWifi();     // Start Wifi Connection
   setDebug();
-  debugMessage(2, 500);
-
-  Serial.begin(9600); /*  Start Serial  */
-  delay(1000);
-
-  //  while (!Serial) {
-  //    ;
-  //  }
-
-  Wire.begin();        // join i2c bus for wind sensor
-
-  dht.begin(); /*  Start DHT22 sensor  */
-  sensors.begin(); /*  Start up the DallasTemperature library  */
-  initiateWifi(); /*  Start Wifi Connection  */
+  delay(5000);
 
   getTimeFromWeb(client);
   setRtc();
+  WiFi.lowPowerMode();
 }
 
 void loop() {
 
-  debugMessage(1, 500);
-  delay(1000);
+  debugMessage(1, 200); // going throug loop
 
   /*  Check incomming HTTP:  */
   while (client.available()) {
@@ -116,24 +89,18 @@ void loop() {
     Serial.write(c);
   }
 
-  /*  Read sensor data from DHT22 and MD20  */
-  if (process) {
-
+  if (sleep == false) {
     debugMessage(5, 100);
     delay(2000);
     readSensors();
     readWind();
     readBattery();
-    Serial.println("Going to high power");
-    //WiFi.noLowPowerMode();
-    delay(2000);
     postDataToSparkFun();
     delay(1000);
-    Serial.println("Going to low power");
-    WiFi.lowPowerMode();
-    if (debug = false) {
-      Serial.println("Debug mode");
-      process = false;
+
+    if (debug == false) {
+      Serial.println("Debug mode OFF");
+      sleep = true;
       rtc.standbyMode();
     }
     Serial.println("end process");
@@ -141,34 +108,5 @@ void loop() {
   Serial.println("end loop");
 }
 
-void alarmMatch()
-{
-  process = true;
-}
 
-void debugMessage(int x, int y) {
-  if (debug) {
-    i = 0;
-    while (i < x)
-    {
-      i++;
-      digitalWrite(LED, HIGH);    // Toggle LED
-      delay(y);
-      digitalWrite(LED, LOW);    // Toggle LED
-      delay(200);
-    }
-  }
-}
-
-
-void setDebug() {
-  if (digitalRead(DEBUGPIN) == LOW) {
-    debug = true;
-    Serial.println("Debug is enabled!");
-  }
-  else {
-    debug = false;
-    Serial.println("Debug is disabled!");
-  }
-}
 

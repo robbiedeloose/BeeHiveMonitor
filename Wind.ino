@@ -26,10 +26,5 @@ void readWind() {
     Serial.println("Kn");
     Serial.println();
   }
-
-  //Serial.println(a);
-  //Serial.println(b);
-  //Serial.println(c);
-  //Serial.println(d);
 }
 

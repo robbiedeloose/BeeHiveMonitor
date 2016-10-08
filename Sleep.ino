@@ -6,3 +6,8 @@ void setRtc() {
   rtc.enableAlarm(rtc.MATCH_SS);
   rtc.attachInterrupt(alarmMatch);
 }
+
+void alarmMatch()
+{
+  sleep = false;
+}
