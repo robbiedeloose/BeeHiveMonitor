@@ -15,11 +15,11 @@ void initiateWifi() {
     delay(5000); // wait 10 seconds for connection:
   }
   Serial.println("Connected to wifi");
-  
+
   printWifiStatus();
 
   Serial.println("\nStarting connection to server...");
-  
+
   if (client.connect(server, 80)) { // if you get a connection, report back via serial:
     Serial.println("connected to server");
     // Make a HTTP request:

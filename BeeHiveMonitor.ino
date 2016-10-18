@@ -5,6 +5,8 @@
 #include <DHT.h> // for DHT Sensors
 #include <OneWire.h> // for DS18 sensors
 #include <DallasTemperature.h>  // for DS18 sensors
+#include <SFE_BMP180.h> // pressure
+#include <SHT2x.h> // humidity
 
 #define ONE_WIRE_BUS 3 // Digital pin for OneWire sensor
 #define DHTPIN 2     // what digital pin DHT is connected to
@@ -12,12 +14,17 @@
 #define LED 6 // Led Pin
 #define DEBUGPIN 7 // pin for debug switch
 #define BATTERYVOLTAGE A0 // pin for voltage divider
+#define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
+
 
 WiFiClient client; // network client
 DHT dht(DHTPIN, DHTTYPE); // DHT instance
 RTCZero rtc; // real time clock instance
 OneWire ourWire(ONE_WIRE_BUS); // Set up a oneWire instance to communicate with any OneWire device
 DallasTemperature sensors(&ourWire); // Tell Dallas Temperature Library to use oneWire Library
+SFE_BMP180 pressure;
+
+
 
 ////// Config variables //////
 
@@ -61,6 +68,17 @@ float temp2 = 0; //DS2-2
 float batteryVoltage = 0;
 
 void setup() {
+
+
+/*
+ * check board type and use the correct type of sleep 
+ * MKR1000 -> set RTC and set RTC alarm
+ * Olimex Nano -> sleep library
+ * other
+ */
+ 
+//read sd first, the choose the correct startup actions
+  
   //Set pinmodes
   pinMode(LED, OUTPUT);
   pinMode(DEBUGPIN, INPUT_PULLUP);
@@ -74,9 +92,24 @@ void setup() {
   setDebug();
   delay(5000);
 
+
+ 
   getTimeFromWeb(client);
   setRtc();
   WiFi.lowPowerMode();
+
+   // Initialize the sensor (it is important to get calibration values stored on the device).
+
+  if (pressure.begin())
+    Serial.println("BMP180 init success");
+  else
+  {
+    // Oops, something went wrong, this is usually a connection problem,
+    // see the comments at the top of this sketch for the proper connections.
+
+    Serial.println("BMP180 init fail\n\n");
+    while(1); // Pause forever.
+  }
 }
 
 void loop() {
@@ -93,8 +126,10 @@ void loop() {
     debugMessage(5, 100);
     delay(2000);
     readSensors();
+    readPressure();
     readWind();
     readBattery();
+    readHumidity();
     postDataToSparkFun();
     delay(1000);
 

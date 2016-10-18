@@ -1,3 +1,7 @@
+/*
+ * Check board type
+ */
+
 void setRtc() {
   rtc.begin();
   rtc.setTime(hours, minutes, seconds);
