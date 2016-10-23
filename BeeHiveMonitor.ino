@@ -37,15 +37,16 @@ char pass[] = "newyork20newyork15";    // your network password (use for WPA, or
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
 // Phant
-const String publicKey = "1n6YvZb9QYsEDamb2pmM";
-const String privateKey = "0mjXKloeVXCNxwgKVjgZ";
+const String publicKey[] = {"RM7wrJGMD5uz9Yypm88z", "RM7wrJGMD5uz9Yypm88z"};
+const String privateKey[] = {"lza1AWPz28hMz580AwwM", "lza1AWPz28hMz580AwwM"};
 char server[] = "data.sparkfun.com"; // Remote host site
 
 // Sensors
 byte hives = 2;
-byte sensorsPerHive = 2;
+byte sensorsPerHive = 3;
 byte windMeter = 0;
 byte scale = 0;
+const String hiveName[] = {"Hive1", "Hive2"};
 
 ////// Variables //////
 
@@ -103,7 +104,7 @@ void setup() {
     // Oops, something went wrong, this is usually a connection problem,
     // see the comments at the top of this sketch for the proper connections.
 
-    Serial.println("BMP180 init fail\n\n");   
+    Serial.println("BMP180 init fail\n\n");
     //while(1); // Pause forever.
   }
 }
@@ -118,18 +119,18 @@ void loop() {
 
   if (sleep == false) {
     debugMessage(5, 100);
-    
+
     //readBmp180();
     readHTU21D();
     //readWind();
     readBattery();
     readDS2Sensors();
-    
+
     postDataToSparkFun();
     delay(1000);
 
     if (debug == false) {
-      if (debug){
+      if (debug) {
         Serial.println("Sleeping");
       }
       sleep = true;
