@@ -1,6 +1,5 @@
 void postDataToSparkFun()
 {
-
   if (client.connect(server, 80))
   {
     Serial.println(F("Connected"));
@@ -31,22 +30,22 @@ void postDataToSparkFun()
     client.print("&");
     client.print("temp_outside");
     client.print("=");
-    client.print(temp);
+    client.print(weather_temp);
 
     client.print("&");
     client.print("temp_1");
     client.print("=");
-    client.print(temp1);
+    client.print(hive_temp[0]);
 
     client.print("&");
     client.print("temp_2");
     client.print("=");
-    client.print(temp2);
+    client.print(hive_temp[1]);
 
     client.print("&");
     client.print("humidity_outside");
     client.print("=");
-    client.print(humidity);
+    client.print(weather_humidity);
 
     client.print("&");
     client.print("rainfall");
@@ -60,7 +59,7 @@ void postDataToSparkFun()
       client.print("-");
     }
     else {
-      client.print(windRichting);
+      client.print(weather_direction);
     }
 
     client.print("&");
@@ -70,13 +69,13 @@ void postDataToSparkFun()
       client.print("-");
     }
     else {
-      client.print(windSnelheid);
+      client.print(weather_speed);
     }
 
     client.print("&");
     client.print("battery");
     client.print("=");
-    client.print(batteryVoltage);
+    client.print(system_bat);
 
     client.print("&");
     client.print("weight");
@@ -116,5 +115,7 @@ void postDataToSparkFun()
   {
     Serial.println(F("Disconnecting."));
     client.stop();
+
   }
 }
+
