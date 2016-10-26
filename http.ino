@@ -1,5 +1,9 @@
 void postDataToSparkFun()
 {
+  // Post Hive Data
+  Serial.print("Posting Data for ");
+  Serial.print(hives);
+  Serial.println(" hives");
 
   for (int x = 0; x < hives; x++) {
 
@@ -110,35 +114,93 @@ void postDataToSparkFun()
     }
     delay(1000);
   }
-}
 
+  // Post Weather Data
 
-/* unused http components
+  Serial.print("Posting Data Weather Station:");
+  Serial.println(weatherStation);
 
-    client.print("&");
-    client.print("rainfall");
-    client.print("=");
-    client.print("-");
+  if (weatherStation)
+  {
+    if (client.connect(server, 80))
+    {
+      Serial.println(F("Connected"));
 
-    client.print("&");
-    client.print("winddirection");
-    client.print("=");
-    if (windMeter == 0) {
-      client.print("-");
-    }
-    else {
-      client.print(weather_direction);
-    }
+      client.print("GET /input/");
+      client.print(publicWeatherKey);
+      client.print("?private_key=");
+      client.print(privateWeatherKey);
 
-    client.print("&");
-    client.print("windspeed");
-    client.print("=");
-    if (windMeter == 0) {
-      client.print("-");
-    }
-    else {
+      client.print("&");
+      client.print("temperature");
+      client.print("=");
+      client.print(weather_temp);
+
+      client.print("&");
+      client.print("humidity");
+      client.print("=");
+      client.print(weather_humidity);
+
+      client.print("&");
+      client.print("pressure");
+      client.print("=");
+      client.print(weather_pressure);
+
+      client.print("&");
+      client.print("windspeed");
+      client.print("=");
       client.print(weather_speed);
+
+      client.print("&");
+      client.print("winddirection");
+      client.print("=");
+      client.print(weather_direction);
+
+      client.print("&");
+      client.print("lux");
+      client.print("=");
+      client.print("-");
+
+      client.print("&");
+      client.print("rainfall");
+      client.print("=");
+      client.print("-");
+
+      client.print("&");
+      client.print("battery");
+      client.print("=");
+      client.print(system_bat);
+
+      client.println(" HTTP/1.1");
+      client.print("Host: ");
+      client.println(server);
+      client.println("Connection: close");
+      client.println();
+
+      // While we're connected, print out anything the server sends:
+      while (client.connected())
+      {
+        if (client.available())
+        {
+          char c = client.read();
+          Serial.print(c);
+        }
+      }
+      Serial.println();
+    }
+    else // If the connection failed, print a message:
+    {
+      Serial.println(F("Connection failed"));
     }
 
-*/
+    // If we're disconnected, stop the client:
+    if (!client.connected())
+    {
+      Serial.println(F("Disconnecting."));
+      client.stop();
+
+    }
+    delay(1000);
+  }
+}
 

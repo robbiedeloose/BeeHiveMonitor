@@ -8,9 +8,6 @@ void readDS2Sensors () {
     Serial.println();
     Serial.println("DEBUG: DS2 sensors:");
     Serial.print("Number of hives: ");
-    Serial.println(hives);
-    Serial.print("Number of sensors per hive: ");
-    Serial.println(sensorsPerHive);
   }
 
   for (int x = 0; x < i; x++) {
@@ -25,7 +22,6 @@ void readDS2Sensors () {
   }
 }
 
-// not in use atm
 void readBmp180() {
   char status;
   double T, P, p0, a;
@@ -102,6 +98,8 @@ void readBmp180() {
           Serial.print(p0 * 0.0295333727, 2);
           Serial.println(" inHg");
 
+          weather_pressure = p0;
+
           // On the other hand, if you want to determine your altitude from the pressure reading,
           // use the altitude function along with a baseline pressure (sea-level or other).
           // Parameters: P = absolute pressure in mb, p0 = baseline pressure in mb.
@@ -137,3 +135,4 @@ void readHTU21D() {
     Serial.println(weather_humidity);
   }
 }
+

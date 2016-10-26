@@ -32,7 +32,7 @@ SFE_BMP180 pressure;
 ////// Config variables //////
 
 // Wifi
-char ssid[] = "telenet-replica"; //  your network SSID (name)
+char ssid[] = "dd-wrt"; //  your network SSID (name)
 char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
@@ -41,12 +41,20 @@ const String publicKey[] = {"RM7wrJGMD5uz9Yypm88z", "RM7wrJGMD5uz9Yypm88z"};
 const String privateKey[] = {"lza1AWPz28hMz580AwwM", "lza1AWPz28hMz580AwwM"};
 char server[] = "data.sparkfun.com"; // Remote host site
 
-// Sensors
-byte hives = 2;
-byte sensorsPerHive = 3;
-byte windMeter = 0;
-byte scale = 0;
+const String publicWeatherKey = "wpjxZLXmDwTrprnEwl1o";
+const String privateWeatherKey = "wzEPBlDjyZUzqzgD9RWl";
+
+// Config
+int hives = 1;
 const String hiveName[] = {"Hive1", "Hive2"};
+int sensorsPerHive = 3;
+boolean scale = false;
+boolean weatherStation = true;
+boolean windMeter = false;
+int interval = 5; // in minuten
+int loopCount = 0;
+
+const String boardType = "feather"; // feather
 
 ////// Variables //////
 
@@ -59,17 +67,23 @@ byte hours = 17;
 byte day = 17;
 byte month = 11;
 int year = 15;
+
 // sleep & debug
 boolean sleep = false;
 boolean debug = false;
 int i = 0;
+
 // Sensors
 float weather_speed = 0; // second arduino
-int   weather_direction = 0; // second arduino
+int weather_direction = 0; // second arduino
+int weather_lux = 0; // not there yet
+float weather_rainfall = 0; // not there yet
 float weather_humidity = 0; //DHT
 float weather_temp = 0; // DHT
+double weather_pressure = 0;
 float hive_temp[15]; //DS2
 float system_bat = 0;
+
 
 void setup() {
 
@@ -110,6 +124,13 @@ void setup() {
 }
 
 void loop() {
+
+  Serial.println();
+  Serial.println();
+  Serial.println("Loop");
+  Serial.println();
+  Serial.println();
+
   debugMessage(1, 200); // going throug loop
   /*  Check incomming HTTP:  */
   while (client.available()) {
@@ -118,24 +139,29 @@ void loop() {
   }
 
   if (sleep == false) {
-    debugMessage(5, 100);
 
-    //readBmp180();
-    readHTU21D();
-    //readWind();
-    readBattery();
-    readDS2Sensors();
+    if (loopCount == interval) {
+      debugMessage(5, 100);
 
-    postDataToSparkFun();
-    delay(1000);
+      readBmp180();
+      readHTU21D();
+      readWind();
+      readBattery();
+      readDS2Sensors();
 
-    if (debug == false) {
-      if (debug) {
-        Serial.println("Sleeping");
+      postDataToSparkFun();
+      delay(1000);
+
+      if (debug == false) {
+        if (debug) {
+          Serial.println("Sleeping");
+        }
+        sleep = true;
+        rtc.standbyMode();
       }
-      sleep = true;
-      rtc.standbyMode();
+    loopCount = 0;
     }
+    loopCount ++;
   }
 }
 
