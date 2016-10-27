@@ -1,4 +1,16 @@
+/*
+ * transfer these to top of master file if reused
+char ssid[] = "telenet-replica"; //  your network SSID (name)
+char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;            // your network key Index number (needed only for WEP)
+// WiFi status
+int status = WL_IDLE_STATUS;
+ */
+
 void initiateWifi() {
+  //change pins for feather
+  WiFi.setPins(8, 7, 4, 2);
+
 
   /* check for the presence of the shield: */
   if (WiFi.status() == WL_NO_SHIELD) {

@@ -7,22 +7,22 @@ void readWind() {
   c = Wire.read();
   d = Wire.read();
 
-  windRichting = a;
-  windRichting = windRichting << 8 | b;
+  weather_direction = a;
+  weather_direction = weather_direction << 8 | b;
 
   int WSH = 0;
   WSH = c;
   WSH = WSH << 8 | d;
-  windSnelheid = WSH;
-  windSnelheid = windSnelheid / 100;
+  weather_speed = WSH;
+  weather_speed = weather_speed / 100;
 
   if (debug) {
     Serial.println("Debug wind Sensor:");
     Serial.print("Graden: ");
-    Serial.print(windRichting);
+    Serial.print(weather_direction);
     Serial.println("*");
     Serial.print("Snelheid: ");
-    Serial.print(windSnelheid);
+    Serial.print(weather_speed);
     Serial.println("Kn");
     Serial.println();
   }
