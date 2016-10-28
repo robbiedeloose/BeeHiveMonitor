@@ -7,6 +7,8 @@
 // Wifi - same for MKR1000 and Adafruit Feather M0 WiFi
 #include <WiFi101.h>
 
+#include <SD.h>
+#include <SDConfigFile.h>
 
 #include <OneWire.h> // for DS18 sensors
 #include <DallasTemperature.h>  // for DS18 sensors
@@ -16,7 +18,7 @@
 #define ONE_WIRE_BUS 5 // Digital pin for OneWire sensor
 // LED13 on feather LED 6 on MKR
 #define LED 13 // Led Pin
-#define DEBUGPIN 10 // pin for debug switch
+#define DEBUGPIN 11 // pin for debug switch
 #define BATTERYVOLTAGE A7 // pin for voltage divider
 #define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
 
@@ -32,7 +34,7 @@ SFE_BMP180 pressure;
 ////// Config variables //////
 
 // Wifi
-char ssid[] = "dd-wrt"; //  your network SSID (name)
+char *ssid = "dd-wrt"; //  your network SSID (name)
 char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 
@@ -84,10 +86,34 @@ double weather_pressure = 0;
 float hive_temp[15]; //DS2
 float system_bat = 0;
 
+// SD CARD //////////////////////////////////////////////////////////////////////
+
+const int pinSelectSD = 10; // SD shield Chip Select pin.
+
+// The filename of the configuration file on the SD card
+const char CONFIG_FILE[] = "example.cfg";
+
+/*
+   Settings we read from the configuration file.
+     didReadConfig = true if the configuration-reading succeeded;
+       false otherwise.
+       Used to prevent odd behaviors if the configuration file
+       is corrupt or missing.
+     hello = the "hello world" string, allocated via malloc().
+     doDelay = if true, delay waitMs in loop().
+       if false, don't delay.
+     waitMs = time (milliseconds) to wait after printing hello.
+*/
+boolean didReadConfig;
+char *hello;
+boolean doDelay;
+int waitMs;
+
+boolean readConfiguration();
+
+/////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
-
-  //read sd first, the choose the correct startup actions
 
   //Set pinmodes
   pinMode(LED, OUTPUT);
@@ -95,6 +121,16 @@ void setup() {
   pinMode (BATTERYVOLTAGE, INPUT);
 
   Serial.begin(9600); // Start Serial
+delay(2000);
+  //read sd first, the choose the correct startup actions
+  pinMode(pinSelectSD, OUTPUT);
+  didReadConfig = false;
+  hello = 0;
+  doDelay = false;
+  waitMs = 0;
+  setupSdCard();
+  readConfiguration();
+
   Wire.begin();       // join i2c bus for wind sensor
   sensors.begin();    // Start up the DallasTemperature library
   initiateWifi();     // Start Wifi Connection
@@ -159,7 +195,7 @@ void loop() {
         sleep = true;
         rtc.standbyMode();
       }
-    loopCount = 0;
+      loopCount = 0;
     }
     loopCount ++;
   }
