@@ -62,7 +62,7 @@ void getTimeFromWeb (Client &client)
     Serial.print(":");
     Serial.print(minutes);
     Serial.print(":");
-    Serial.println(hours);
+    Serial.println(seconds);
 
     Serial.println("Date:");
     Serial.print(day);

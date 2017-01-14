@@ -1,14 +1,14 @@
 void setupSdCard() {
 
 
-  didReadConfig = false;
-  hello = 0;
-  doDelay = false;
   waitMs = 0;
 
 
   // Setup the SD card
- 
+
+  didReadConfig = false;
+  hello = 0;
+  doDelay = false;
   Serial.println("Calling SD.begin()...");
   if (!SD.begin(pinSelectSD)) {
     Serial.println("SD.begin() failed. Check: ");
@@ -25,7 +25,7 @@ void setupSdCard() {
 }
 
 boolean readConfiguration() {
-  
+
   /*
      Length of the longest line expected in the config file.
      The larger this number, the more memory is used
@@ -184,9 +184,6 @@ boolean readConfiguration() {
     //      Serial.print("privateKey5: ");
     //      Serial.println(privateKey[4]);
     //    }
-
-
-
     else {
       // report unrecognized names.
       Serial.print("Unknown name in config: ");
@@ -196,4 +193,102 @@ boolean readConfiguration() {
 
   // clean up
   cfg.end();
+}
+
+void logToSdCard() {
+
+  for (int x = 0; x < hives; x++) {
+
+    // open the file. note that only one file can be open at a time,
+    // so you have to close this one before opening another.
+    String dataString = "";
+    String fileName = hiveName[x] + "-" + String(month) +".txt";
+    //fileName = "datalog.txt";
+    
+      if (SD.exists(fileName) {
+    Serial.println(fileName + " exists.");
+  } else {
+    Serial.println(fileName + "  doesn't exist.");
+  }
+    
+    
+    File logFile = SD.open(fileName, FILE_WRITE);
+
+    if (logFile) {
+
+      Serial.println("Writing to " + fileName);
+
+      //wheater temperature
+      dataString += weather_temp;
+      dataString += ",";
+
+      // calculate sensor id
+      int max = (x + 1) * sensorsPerHive;
+      int min = max - (sensorsPerHive);
+      int z = 1;
+
+      for (int y = min; y < max; y++) {
+        dataString += hive_temp[y];
+        dataString += ",";
+        z++;
+      }
+
+      dataString += weather_humidity;
+      dataString += ",";
+      dataString += hive_humidity[x];
+      dataString += ",";
+      //hive weight
+      dataString += "-";
+      dataString += ",";
+
+      dataString += system_bat;
+      dataString += ",";
+      
+      Serial.println(dataString);
+      logFile.println(dataString);
+      delay(200);
+
+      logFile.close();
+
+
+    }
+
+    // if the file isn't open, pop up an error:
+    else {
+      Serial.print("error opening ");
+      Serial.println(fileName);
+    }
+
+  }
+}
+
+
+void testsd() {
+  // make a string for assembling the data to log:
+  String dataString = "";
+
+  // read three sensors and append to the string:
+  for (int analogPin = 0; analogPin < 3; analogPin++) {
+    int sensor = analogRead(analogPin);
+    dataString += String(sensor);
+    if (analogPin < 2) {
+      dataString += ",";
+    }
+  }
+
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    // print to the serial port too:
+    Serial.println(dataString);
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening datalog.txt");
+  }
 }

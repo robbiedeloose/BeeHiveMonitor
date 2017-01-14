@@ -71,7 +71,7 @@ void postDataToSparkFun()
       client.print("&");
       client.print("humidity_inside");
       client.print("=");
-      client.print("-");
+      client.print(hive_humidity[x]);
 
       client.print("&");
       client.print("weight");

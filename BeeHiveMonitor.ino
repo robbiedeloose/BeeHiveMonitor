@@ -43,7 +43,7 @@ DHT dht1(DHTPIN1, DHTTYPE);
 
 // Wifi
 boolean useWifi = true;
-char *ssid = "dd-wrt"; //  your network SSID (name)
+char *ssid = "telenet-replica"; //  your network SSID (name)
 char *pass = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 boolean useGprs = false;
@@ -96,7 +96,7 @@ float weather_humidity = 0; //HTU21D
 float weather_temp = 0; // HTU21D
 double weather_pressure = 0;
 float hive_temp[15]; //DS2
-float hive_humidity[3]; //DHT22
+float hive_humidity[3] = {0, 0, 0}; //DHT22
 float system_bat = 0;
 
 // SD CARD //////////////////////////////////////////////////////////////////////
@@ -147,17 +147,18 @@ void setup() {
   Serial.println();
   Serial.println("----- Starting SD Card");
   setupSdCard();
+  testsd();
   Serial.println();
   Serial.println("----- Reading configuration data from SD card");
-  didReadConfig = readConfiguration();
+  //didReadConfig = readConfiguration();
 
   Serial.println();
   Serial.println("----- Start I2C Bus");
   Wire.begin();       // join i2c bus for wind sensor
-    Serial.println();
+  Serial.println();
   Serial.println("----- Start Dallas Library");
   sensors.begin();    // Start up the DallasTemperature library
-    Serial.println();
+  Serial.println();
   Serial.println("----- Start Wifi Connection");
   initiateWifi();     // Start Wifi Connection
   Serial.println();
@@ -167,7 +168,7 @@ void setup() {
   Serial.println();
   Serial.println("----- Get Time From the Web");
   getTimeFromWeb(client);
-    Serial.println();
+  Serial.println();
   Serial.println("----- Set Real Time Clock");
   setRtc();
   Serial.println("set wifi power mode");
@@ -228,9 +229,14 @@ void loop() {
       // READ BATTERY VOLTAGE
       readBattery();
 
+      testsd();
+      logToSdCard();
 
+      
       postDataToSparkFun();
       delay(1000);
+
+
 
       if (debug == false) {
         if (debug) {
