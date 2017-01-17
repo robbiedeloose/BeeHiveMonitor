@@ -1,3 +1,5 @@
+// READ WIND DATA --> NOT USED ATM
+
 void readWind() {
   Wire.requestFrom(2, 4);    // request 4 bytes from slave device #2
 

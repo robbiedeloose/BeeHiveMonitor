@@ -1,4 +1,6 @@
 
+// READ HIVE TEMPERATURES
+
 void readDS2Sensors () {
   sensors.requestTemperatures(); // Send the command to get temperatures
 
@@ -7,7 +9,7 @@ void readDS2Sensors () {
   if (debug) {
     Serial.println();
     Serial.println("DEBUG: DS2 sensors:");
-    Serial.print("Number of hives: ");
+    Serial.println("Number of hives: ");
   }
 
   for (int x = 0; x < i; x++) {
@@ -21,6 +23,8 @@ void readDS2Sensors () {
     }
   }
 }
+
+// READ PRESSURE --> NOT USED ATM
 
 void readBmp180() {
   char status;
@@ -123,6 +127,8 @@ void readBmp180() {
   delay(5000);  // Pause for 5 seconds.
 }
 
+// READ WEATHER DATA --> TEMP AND HUMIDITY
+
 void readHTU21D() {
   weather_temp = SHT2x.GetTemperature();
   weather_humidity = SHT2x.GetHumidity();
@@ -136,3 +142,25 @@ void readHTU21D() {
   }
 }
 
+// READ HIVE HUMIDITY
+
+void readDhtSensors () {
+  /*  DHT Sensor  */
+  
+  hive_humidity[0] = dht1.readHumidity();
+  //temp = dht.readTemperature();
+
+  // Check if any reads failed and exit early (to try again).
+  //  if (isnan(humidity) || isnan(temp)) {
+  //    Serial.println("Failed to read from DHT sensor!");
+  //    return;
+  //  }
+  //heatIndex = dht.computeHeatIndex(temp, humidity, false);
+
+  if (debug) {
+    Serial.println("Debug DHT22 Sensors:");
+    Serial.print("Humidity: ");
+    Serial.print(hive_humidity[0]);
+    Serial.println("%");
+  }
+}
