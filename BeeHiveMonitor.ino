@@ -16,16 +16,25 @@
 #include <SHT2x.h> // weather humidity
 #include <DHT.h> // hive humidity
 
-
-#define ONE_WIRE_BUS 5 // Digital pin for OneWire sensor
+///////////////// !!!!! PINS !!!!! /////////////////////////
+#define ONE_WIRE_BUS A5 // Digital pin for OneWire sensor
 // LED13 on feather LED 6 on MKR
 #define LED 13 // Led Pin
-#define DEBUGPIN 11 // pin for debug switch
+#define DEBUGPIN A0 // pin for debug switchx  
 #define BATTERYVOLTAGE A7 // pin for voltage divider
+#define BATTERYVOLTAGE2 A1 // pin for 12v 
 #define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
-#define DHTPIN1 10 // what digital pin we're connected to
-//#define DHTPIN2 9 // what digital pin we're connected to
-//#define DHTPIN3 8 // what digital pin we're connected to
+#define DHTPIN1 A2 // what digital pin we're connected to
+//#define DHTPIN2 A3 // what digital pin we're connected to
+//#define DHTPIN3 A4 // what digital pin we're connected to
+#define SCALE1_CLK 11
+#define SCALE1_DTA 12
+//#define SCALE2_CLK 5
+//#define SCALE2_DTA 6
+//#define SCALE3_CLK 0
+//#define SCALE3_DTA 1
+
+#define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
 #define DHTTYPE DHT22 // DHT 22  (AM2302), AM2321
 
 WiFiClient client; // network client

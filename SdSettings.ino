@@ -205,12 +205,6 @@ void logToSdCard() {
     String fileName = hiveName[x] + "-" + String(month) +".txt";
     //fileName = "datalog.txt";
     
-      if (SD.exists(fileName) {
-    Serial.println(fileName + " exists.");
-  } else {
-    Serial.println(fileName + "  doesn't exist.");
-  }
-    
     
     File logFile = SD.open(fileName, FILE_WRITE);
 
