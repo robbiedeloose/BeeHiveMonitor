@@ -3,7 +3,7 @@
 
 void readDS2Sensors () {
   sensors.requestTemperatures(); // Send the command to get temperatures
-
+delay(500);
   byte i = hives * sensorsPerHive;
 
   if (debug) {

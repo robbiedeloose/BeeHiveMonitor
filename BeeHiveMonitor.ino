@@ -107,6 +107,7 @@ double weather_pressure = 0;
 float hive_temp[15]; //DS2
 float hive_humidity[3] = {0, 0, 0}; //DHT22
 float system_bat = 0;
+float system_bat2 = 0;
 
 // SD CARD //////////////////////////////////////////////////////////////////////
 
@@ -143,6 +144,7 @@ void setup() {
   pinMode(LED, OUTPUT);
   pinMode(DEBUGPIN, INPUT_PULLUP);
   pinMode (BATTERYVOLTAGE, INPUT);
+  pinMode (BATTERYVOLTAGE2, INPUT);
 
   Serial.begin(9600); // Start Serial
   delay(2000);
@@ -237,11 +239,13 @@ void loop() {
 
       // READ BATTERY VOLTAGE
       readBattery();
+      readBattery2();
+
 
       testsd();
       logToSdCard();
 
-      
+
       postDataToSparkFun();
       delay(1000);
 
