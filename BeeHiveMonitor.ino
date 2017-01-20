@@ -21,7 +21,7 @@
 // LED13 on feather LED 6 on MKR
 #define LED 13 // Led Pin
 #define DEBUGPIN A0 // pin for debug switchx  
-#define BATTERYVOLTAGE A7 // pin for voltage divider
+#define BATTERYVOLTAGE A7// pin for voltage divider
 #define BATTERYVOLTAGE2 A1 // pin for 12v 
 #define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
 #define DHTPIN1 A2 // what digital pin we're connected to
@@ -97,6 +97,10 @@ boolean debug = false;
 int i = 0;
 
 // Sensors
+
+int numberOfDevices; // Number of temperature devices found
+DeviceAddress tempDeviceAddress; // We'll use this variable to store a found device address
+
 float weather_speed = 0; // second arduino
 int weather_direction = 0; // second arduino
 int weather_lux = 0; // not there yet
@@ -161,7 +165,7 @@ void setup() {
   testsd();
   Serial.println();
   Serial.println("----- Reading configuration data from SD card");
-  //didReadConfig = readConfiguration();
+  didReadConfig = readConfiguration();
 
   Serial.println();
   Serial.println("----- Start I2C Bus");
@@ -169,6 +173,7 @@ void setup() {
   Serial.println();
   Serial.println("----- Start Dallas Library");
   sensors.begin();    // Start up the DallasTemperature library
+  initiateDsSensors();
   Serial.println();
   Serial.println("----- Start Wifi Connection");
   initiateWifi();     // Start Wifi Connection
@@ -223,7 +228,8 @@ void loop() {
       debugMessage(5, 100);
 
       // READ HIVE TEMPERATURES
-      readDS2Sensors();
+      //readDS2Sensors();
+      readDsSensors();
 
       // READ HIVE HUMIDITY
       readDhtSensors();

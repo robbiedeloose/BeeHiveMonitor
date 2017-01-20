@@ -1,4 +1,3 @@
-
 // READ HIVE TEMPERATURES
 
 void readDS2Sensors () {

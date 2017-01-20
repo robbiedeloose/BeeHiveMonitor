@@ -18,7 +18,7 @@ void readBattery2() {
 
   if (debug) {
     Serial.println("DEBUG battery: ");
-    Serial.print("Battery voltage: ");
+    Serial.print("Battery 2 voltage: ");
     Serial.println(system_bat2);
     Serial.println();
   }
