@@ -30,6 +30,11 @@ void postDataToSparkFun()
         }*/
 
       client.print("&");
+      client.print("time_and_date");
+      client.print("=");
+      client.print("-");
+
+      client.print("&");
       client.print("hive");
       client.print("=");
       client.print(hiveName[x]);
@@ -83,13 +88,18 @@ void postDataToSparkFun()
       client.print("=");
       client.print(system_bat);
 
+      client.print("&");
+      client.print("battery_2");
+      client.print("=");
+      client.print(system_bat2);
+
       client.println(" HTTP/1.1");
       client.print("Host: ");
       client.println(server);
       client.println("Connection: close");
       client.println();
 
-      // While we're connected, print out anything the server sends:
+      //  While we're connected, print out anything the server sends:
       while (client.connected())
       {
         if (client.available())

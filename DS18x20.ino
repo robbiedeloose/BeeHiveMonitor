@@ -61,7 +61,7 @@ void readDsSensors()
     Serial.print("Temperature for the device 1 (index "); Serial.print(i); Serial.print(") is: ");
     hive_temp[i] = sensors.getTempCByIndex(i);
     Serial.println(hive_temp[i]);
-    delay(1000);
+    delay(500);
   }
 
 }

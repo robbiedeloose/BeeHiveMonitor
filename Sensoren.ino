@@ -2,7 +2,7 @@
 
 void readDS2Sensors () {
   sensors.requestTemperatures(); // Send the command to get temperatures
-delay(500);
+  delay(500);
   byte i = hives * sensorsPerHive;
 
   if (debug) {
@@ -134,7 +134,7 @@ void readHTU21D() {
   if (debug) {
     Serial.println();
     Serial.println("DEBUG HTU21 Sensor:");
-    Serial.print("Humidity(%RH): ");
+    Serial.print  ("Humidity(%RH): ");
     Serial.println(weather_temp);
     Serial.print("Temperature(C): ");
     Serial.println(weather_humidity);
@@ -144,17 +144,8 @@ void readHTU21D() {
 // READ HIVE HUMIDITY
 
 void readDhtSensors () {
-  /*  DHT Sensor  */
-  
   hive_humidity[0] = dht1.readHumidity();
-  //temp = dht.readTemperature();
-
-  // Check if any reads failed and exit early (to try again).
-  //  if (isnan(humidity) || isnan(temp)) {
-  //    Serial.println("Failed to read from DHT sensor!");
-  //    return;
-  //  }
-  //heatIndex = dht.computeHeatIndex(temp, humidity, false);
+  delay(500);
 
   if (debug) {
     Serial.println("Debug DHT22 Sensors:");

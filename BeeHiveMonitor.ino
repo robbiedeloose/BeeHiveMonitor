@@ -20,7 +20,7 @@
 #define ONE_WIRE_BUS A5 // Digital pin for OneWire sensor
 // LED13 on feather LED 6 on MKR
 #define LED 13 // Led Pin
-#define DEBUGPIN A0 // pin for debug switchx  
+#define DEBUGPIN A0 // pin for debug switch  
 #define BATTERYVOLTAGE A7// pin for voltage divider
 #define BATTERYVOLTAGE2 A1 // pin for 12v 
 #define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
@@ -61,19 +61,19 @@ boolean useGprs = false;
 //char *publicKey1;
 //char *privateKey1;
 
-String publicKey[] = {"azerty", "RM7wrJGMD5uz9Yypm88z"};
-String privateKey[] = {"qwerty", "lza1AWPz28hMz580AwwM"};
+String publicKey[] = {"RM7wrJGMD5uz9Yypm88z", "RM7wrJGMD5uz9Yypm88z"};
+String privateKey[] = {"lza1AWPz28hMz580AwwM", "lza1AWPz28hMz580AwwM"};
 char server[] = "data.sparkfun.com"; // Remote host site
 
 const String publicWeatherKey = "wpjxZLXmDwTrprnEwl1o";
 const String privateWeatherKey = "wzEPBlDjyZUzqzgD9RWl";
 
 // Config
-int hives = 2;
+int hives = 1;
 String hiveName[] = {"Hive1", "Hive2"};
 int sensorsPerHive = 3;
 boolean scale = false;
-boolean weatherStation = true;
+boolean weatherStation = false;
 int interval = 5; // in minuten
 int loopCount = 0;
 
@@ -118,7 +118,8 @@ float system_bat2 = 0;
 const int pinSelectSD = 10; // SD shield Chip Select pin.
 
 // The filename of the configuration file on the SD card
-const char CONFIG_FILE[] = "example.cfg";
+// dualHive.cfg or singleHive.cfg
+const char CONFIG_FILE[] = "singleHive.cfg";
 
 /*
    Settings we read from the configuration file.
@@ -132,10 +133,6 @@ const char CONFIG_FILE[] = "example.cfg";
      waitMs = time (milliseconds) to wait after printing hello.
 */
 boolean didReadConfig;
-char *hello;
-boolean doDelay;
-int waitMs;
-
 boolean readConfiguration();
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -146,129 +143,136 @@ void setup() {
 
   //Set pinmodes
   pinMode(LED, OUTPUT);
-  pinMode(DEBUGPIN, INPUT_PULLUP);
+  pinMode(DEBUGPIN, INPUT);
   pinMode (BATTERYVOLTAGE, INPUT);
   pinMode (BATTERYVOLTAGE2, INPUT);
 
-  Serial.begin(9600); // Start Serial
+  // Start Serial
+  Serial.begin(9600);
   delay(2000);
+
   //read sd first, the choose the correct startup actions
   pinMode(pinSelectSD, OUTPUT);
   didReadConfig = false;
-  hello = 0;
-  doDelay = false;
-  waitMs = 0;
 
   Serial.println();
-  Serial.println("----- Starting SD Card");
+  Serial.println("-- Starting SD Card");
   setupSdCard();
-  testsd();
-  Serial.println();
-  Serial.println("----- Reading configuration data from SD card");
-  didReadConfig = readConfiguration();
 
-  Serial.println();
-  Serial.println("----- Start I2C Bus");
-  Wire.begin();       // join i2c bus for wind sensor
-  Serial.println();
-  Serial.println("----- Start Dallas Library");
+  Serial.println("-- Reading configuration data from SD card");
+  didReadConfig = readConfiguration();
+  Serial.println("Done!");
+
+  Wire.begin();       // join i2c bus for wind sensor and other I2C sensors
   sensors.begin();    // Start up the DallasTemperature library
   initiateDsSensors();
-  Serial.println();
-  Serial.println("----- Start Wifi Connection");
+
+  Serial.println("--Start Wifi Connection");
   initiateWifi();     // Start Wifi Connection
   Serial.println();
-  Serial.println("----- Set Debug Level");
-  setDebug();         // Check if debug is enabled (pin 10 low)
+
+  Serial.println("-- Set Debug Level");
+  //setDebug();         // Check if debug is enabled (pin 10 low)
+  debug = true;
   delay(10000);        // Allow some time before sleep to be able to reprogram te board if needed
-  Serial.println();
+
   Serial.println("----- Get Time From the Web");
   getTimeFromWeb(client);
-  Serial.println();
+
   Serial.println("----- Set Real Time Clock");
   setRtc();
+
   Serial.println("set wifi power mode");
   WiFi.lowPowerMode();
-  Serial.println("start bmp180");
 
-  // Initialize the sensor (it is important to get calibration values stored on the device).
+  //  Serial.println("start bmp180");
+  //
+  //  // Initialize the sensor (it is important to get calibration values stored on the device).
+  //
+  //  if (pressure.begin()) {
+  //    delay(1000);
+  //    Serial.println("BMP180 init success");
+  //  }
+  //  else
+  //  {
+  //    // Oops, something went wrong, this is usually a connection problem,
+  //    // see the comments at the top of this sketch for the proper connections.
+  //
+  //    Serial.println("BMP180 init fail\n\n");
+  //    //while(1); // Pause forever.
+  //  }
 
-  if (pressure.begin()) {
-    delay(1000);
-    Serial.println("BMP180 init success");
-  }
-  else
-  {
-    // Oops, something went wrong, this is usually a connection problem,
-    // see the comments at the top of this sketch for the proper connections.
-
-    Serial.println("BMP180 init fail\n\n");
-    //while(1); // Pause forever.
-  }
 }
 
 void loop() {
 
-  Serial.println();
-  Serial.println();
   Serial.println("Going Through Loop");
-  Serial.println();
-  Serial.println();
-
   debugMessage(1, 200); // going throug loop
-  /*  Check incomming HTTP:  */
-  while (client.available()) {
-    char c = client.read();
-    Serial.write(c);
-  }
 
-  if (sleep == false) {
-
-    if (loopCount == interval) {
-      debugMessage(5, 100);
-
-      // READ HIVE TEMPERATURES
-      //readDS2Sensors();
-      readDsSensors();
-
-      // READ HIVE HUMIDITY
-      readDhtSensors();
-
-      // READ WEATHER DATA --> TEMP AND HUMIDITY
-      readHTU21D();
-
-      // READ PRESSURE --> NOT USED ATM
-      //readBmp180();
-
-      // READ WIND DATA --> NOT USED ATM
-      //readWind();
-
-      // READ BATTERY VOLTAGE
-      readBattery();
-      readBattery2();
+  //  /*  Check incomming HTTP:  */
+  //  while (client.available()) {
+  //    char c = client.read();
+  //    Serial.write(c);
+  //  }
+  //
+  //  if (sleep == false) {
+  //    if (loopCount == interval) {
+  //      Serial.println("Do Stuff");
+  //
+  //      if (debug == false)
+  //      {
+  //        if (debug) {
+  //          Serial.println("Sleeping");
+  //        }
 
 
-      testsd();
-      logToSdCard();
+    doStuf();
 
-
-      postDataToSparkFun();
-      delay(1000);
-
-
-
-      if (debug == false) {
-        if (debug) {
-          Serial.println("Sleeping");
-        }
-        sleep = true;
-        rtc.standbyMode();
-      }
-      loopCount = 0;
+    // Delay for 60 seconds if debug is enabled, sleep otherwise
+    if (debug == true){
+      delay(60000);
     }
-    loopCount ++;
-  }
+    else{
+    rtc.standbyMode();  
+    }
+
+
+  //      }
+  //      loopCount = 0;
+  //    }
+  //    loopCount ++;
+  //  }
 }
 
+void doStuf() {
+  debugMessage(5, 100);
+
+  // READ HIVE TEMPERATURES
+  //readDS2Sensors();
+  readDsSensors();
+
+  // READ HIVE HUMIDITY
+  readDhtSensors();
+
+  // READ WEATHER DATA --> TEMP AND HUMIDITY
+  readHTU21D();
+
+  // READ PRESSURE --> NOT USED ATM
+  //readBmp180();
+
+  // READ WIND DATA --> NOT USED ATM
+  //readWind();
+
+  // READ BATTERY VOLTAGE
+  readBattery();
+  readBattery2();
+
+  // log to SD card
+  logToSdCard();
+
+  // send to the internet
+  postDataToSparkFun();
+  delay(1000);
+}
 
 

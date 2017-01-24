@@ -1,14 +1,13 @@
 void setupSdCard() {
 
 
-  waitMs = 0;
+
 
 
   // Setup the SD card
 
   didReadConfig = false;
-  hello = 0;
-  doDelay = false;
+ 
   Serial.println("Calling SD.begin()...");
   if (!SD.begin(pinSelectSD)) {
     Serial.println("SD.begin() failed. Check: ");
@@ -49,30 +48,10 @@ boolean readConfiguration() {
 
     // Put a nameIs() block here for each setting you have.
 
-    // doDelay
-    if (cfg.nameIs("doDelay")) {
-
-      doDelay = cfg.getBooleanValue();
-      Serial.print("Read doDelay: ");
-      if (doDelay) {
-        Serial.println("true");
-      } else {
-        Serial.println("false");
-      }
-
-      // waitMs integer
-    } else if (cfg.nameIs("waitMs")) {
-
-      waitMs = cfg.getIntValue();
-      Serial.print("Read waitMs: ");
-      Serial.println(waitMs);
-
-      // hello string (char *)
-    }
 
     // General settings
 
-    else if (cfg.nameIs("numberOfHives")) {
+    if (cfg.nameIs("numberOfHives")) {
       hives = cfg.getIntValue();
       Serial.print("Numbers of hives: ");
       Serial.println(hives);
@@ -95,6 +74,16 @@ boolean readConfiguration() {
       weatherStation = cfg.getBooleanValue();
       Serial.print("Read doDelay: ");
       if (weatherStation) {
+        Serial.println("yes");
+      } else {
+        Serial.println("no");
+      }
+    }
+
+ else if (cfg.nameIs("scalesConnected")) {
+      scale = cfg.getBooleanValue();
+      Serial.print("Read doDelay: ");
+      if (scale) {
         Serial.println("yes");
       } else {
         Serial.println("no");
@@ -202,10 +191,10 @@ void logToSdCard() {
     // open the file. note that only one file can be open at a time,
     // so you have to close this one before opening another.
     String dataString = "";
-    String fileName = hiveName[x] + "-" + String(month) +".txt";
+    String fileName = hiveName[x] + "-" + String(month) + ".txt";
     //fileName = "datalog.txt";
-    
-    
+
+
     File logFile = SD.open(fileName, FILE_WRITE);
 
     if (logFile) {
@@ -237,7 +226,7 @@ void logToSdCard() {
 
       dataString += system_bat;
       dataString += ",";
-      
+
       Serial.println(dataString);
       logFile.println(dataString);
       delay(200);
@@ -253,36 +242,5 @@ void logToSdCard() {
       Serial.println(fileName);
     }
 
-  }
-}
-
-
-void testsd() {
-  // make a string for assembling the data to log:
-  String dataString = "";
-
-  // read three sensors and append to the string:
-  for (int analogPin = 0; analogPin < 3; analogPin++) {
-    int sensor = analogRead(analogPin);
-    dataString += String(sensor);
-    if (analogPin < 2) {
-      dataString += ",";
-    }
-  }
-
-  // open the file. note that only one file can be open at a time,
-  // so you have to close this one before opening another.
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
-
-  // if the file is available, write to it:
-  if (dataFile) {
-    dataFile.println(dataString);
-    dataFile.close();
-    // print to the serial port too:
-    Serial.println(dataString);
-  }
-  // if the file isn't open, pop up an error:
-  else {
-    Serial.println("error opening datalog.txt");
   }
 }
