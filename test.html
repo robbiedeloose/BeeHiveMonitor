@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- EXTERNAL LIBS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+
+    <!-- EXAMPLE SCRIPT -->
+    <script>
+
+      // onload callback
+      function drawChart1() {
+
+        var public_key = 'RM7wrJGMD5uz9Yypm88z';
+
+        // JSONP request
+        var jsonData = $.ajax({
+          url: 'https://data.sparkfun.com/output/' + public_key + '.json',
+          data: {page: 1},
+          dataType: 'jsonp',
+        }).done(function (results) {
+
+          var data = new google.visualization.DataTable();
+
+          data.addColumn('datetime', 'Time');
+          data.addColumn('number', 'Battery');
+
+          $.each(results, function (i, row) {
+            data.addRow([
+              (new Date(row.timestamp)),
+              parseFloat(row.battery_2)
+            ]);
+          });
+
+		  var options = {
+          title: 'Company Performance',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+		  
+          var chart = new google.visualization.LineChart($('#chart1').get(0));
+
+          chart.draw(data, {
+            title: 'System solar power bank'
+          });
+
+        });
+
+      }
+	  
+	        // onload callback
+      function drawChart2() {
+
+        var public_key = 'RM7wrJGMD5uz9Yypm88z';
+
+        // JSONP request
+        var jsonData = $.ajax({
+          url: 'https://data.sparkfun.com/output/' + public_key + '.json',
+          data: {limit: 5},
+          dataType: 'jsonp',
+        }).done(function (results) {
+
+          var data = new google.visualization.DataTable();
+
+          data.addColumn('datetime', 'Time');
+          data.addColumn('number', 'Batteries');
+          data.addColumn('number', 'Temp 1');
+
+          $.each(results, function (i, row) {
+            data.addRow([
+              (new Date(row.timestamp)),
+              parseFloat(row.battery_2),
+              parseFloat(row.temperature_1)
+            ]);
+          });
+
+          var chart = new google.visualization.LineChart($('#chart2').get(0));
+
+          chart.draw(data, {
+            title: 'Wimp Weather Station'
+          });
+
+        });
+
+      }
+	  
+
+      // load chart lib
+      google.load('visualization', '1', {
+        packages: ['corechart']
+      });
+
+      // call drawChart once google charts is loaded
+      google.setOnLoadCallback(drawChart1);
+	  
+	  
+      // call drawChart once google charts is loaded
+      google.setOnLoadCallback(drawChart2);
+
+    </script>
+
+  </head>
+  <body>
+    <div id="chart1" style="width: 100%; height: 500px"></div>
+	  <div id="chart2" style="width: 100%; height: 500px""></div>
+	
+  </body>
+</html>

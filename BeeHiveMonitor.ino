@@ -6,6 +6,7 @@
 #include <SPI.h>
 // Wifi - same for MKR1000 and Adafruit Feather M0 WiFi
 #include <WiFi101.h>
+#include <WiFiUdp.h>
 
 #include <SD.h>
 #include <SDConfigFile.h>
@@ -87,13 +88,15 @@ int status = WL_IDLE_STATUS;
 byte seconds = 0;
 byte minutes = 00;
 byte hours = 17;
-byte day = 17;
-byte month = 11;
-int year = 15;
+byte days = 17;
+byte months = 11;
+int years = 15;
+time_t epochTime;
+time_t epochNextReboot;
 
 // sleep & debug
 boolean sleep = false;
-boolean debug = false;
+boolean debug = true;
 int i = 0;
 
 // Sensors
@@ -150,7 +153,6 @@ void setup() {
   // Start Serial
   Serial.begin(9600);
   delay(2000);
-
   //read sd first, the choose the correct startup actions
   pinMode(pinSelectSD, OUTPUT);
   didReadConfig = false;
@@ -181,6 +183,7 @@ void setup() {
 
   Serial.println("----- Set Real Time Clock");
   setRtc();
+  setNextReboot();
 
   Serial.println("set wifi power mode");
   WiFi.lowPowerMode();
@@ -225,16 +228,16 @@ void loop() {
   //          Serial.println("Sleeping");
   //        }
 
+  doStuf();
+  checkIfRebootIsNeeded();
 
-    doStuf();
-
-    // Delay for 60 seconds if debug is enabled, sleep otherwise
-    if (debug == true){
-      delay(60000);
-    }
-    else{
-    rtc.standbyMode();  
-    }
+  // Delay for 60 seconds if debug is enabled, sleep otherwise
+  if (debug == true) {
+    delay(60000);
+  }
+  else {
+    rtc.standbyMode();
+  }
 
 
   //      }

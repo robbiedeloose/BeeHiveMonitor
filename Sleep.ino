@@ -5,7 +5,7 @@ void setRtc() {
   }
   rtc.begin();
   rtc.setTime(hours, minutes, seconds);
-  rtc.setDate(day, month, year);
+  rtc.setDate(days, months, years);
   if (debug) {
     Serial.println("set alarm");
   }
@@ -20,4 +20,22 @@ void alarmMatch()
     Serial.println("alarm triggered");
   }
   sleep = false;
+}
+
+void setNextReboot() {
+  epochNextReboot = rtc.getEpoch() + 100;
+  if (debug) {
+    Serial.print("Current Epoch time: "); Serial.println(rtc.getEpoch());
+    Serial.print("Next reboot: "); Serial.println(epochNextReboot);
+  }
+}
+
+void checkIfRebootIsNeeded() {
+  epochTime = rtc.getEpoch();
+  if( epochTime > epochNextReboot){
+    Serial.println("Ready to reboot");
+  }
+  else{
+     Serial.println("Ready timer not yet reached");
+  }
 }

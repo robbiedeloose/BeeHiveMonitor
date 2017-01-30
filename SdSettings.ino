@@ -191,7 +191,7 @@ void logToSdCard() {
     // open the file. note that only one file can be open at a time,
     // so you have to close this one before opening another.
     String dataString = "";
-    String fileName = hiveName[x] + "-" + String(month) + ".txt";
+    String fileName = hiveName[x] + "-" + String(months) + ".txt";
     //fileName = "datalog.txt";
 
 

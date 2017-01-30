@@ -16,34 +16,34 @@ void getTimeFromWeb (Client &client)
     if (client.find((char *)"\r\nDate: ") // look for Date: header
         && client.readBytes(buf, 5) == 5) // discard
     {
-      day = client.parseInt();    // day
+      days = client.parseInt();    // day
       client.readBytes(buf, 1);    // discard
       client.readBytes(buf, 3);    // month
-      year = client.parseInt();    // year
+      years = client.parseInt();    // year
       hours = client.parseInt();   // hour
       minutes = client.parseInt(); // minute
       seconds = client.parseInt(); // second
 
       switch (buf[0])
       {
-        case 'F': month = 2; break; // Feb
-        case 'S': month = 9; break; // Sep
-        case 'O': month = 10; break; // Oct
-        case 'N': month = 11; break; // Nov
-        case 'D': month = 12; break; // Dec
+        case 'F': months = 2; break; // Feb
+        case 'S': months = 9; break; // Sep
+        case 'O': months = 10; break; // Oct
+        case 'N': months = 11; break; // Nov
+        case 'D': months = 12; break; // Dec
         default:
           if (buf[0] == 'J' && buf[1] == 'a')
-            month = 1;   // Jan
+            months = 1;   // Jan
           else if (buf[0] == 'A' && buf[1] == 'p')
-            month = 4;    // Apr
+            months = 4;    // Apr
           else switch (buf[2])
             {
-              case 'r': month = 3; break; // Mar
-              case 'y': month = 5; break; // May
-              case 'n': month = 6; break; // Jun
-              case 'l': month = 7; break; // Jul
+              case 'r': months = 3; break; // Mar
+              case 'y': months = 5; break; // May
+              case 'n': months = 6; break; // Jun
+              case 'l': months = 7; break; // Jul
               default: // add a default label here to avoid compiler warning
-              case 'g': month = 8; break; // Aug
+              case 'g': months = 8; break; // Aug
             }
       }
 
@@ -65,11 +65,11 @@ void getTimeFromWeb (Client &client)
     Serial.println(seconds);
 
     Serial.println("Date:");
-    Serial.print(day);
+    Serial.print(days);
     Serial.print("/");
-    Serial.print(month);
+    Serial.print(months);
     Serial.print("/");
-    Serial.println(year);
+    Serial.println(years);
   }
   delay(10);
   client.flush();
