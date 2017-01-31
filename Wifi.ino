@@ -1,11 +1,11 @@
 /*
- * transfer these to top of master file if reused
-char ssid[] = "telenet-replica"; //  your network SSID (name)
-char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
-int keyIndex = 0;            // your network key Index number (needed only for WEP)
-// WiFi status
-int status = WL_IDLE_STATUS;
- */
+   transfer these to top of master file if reused
+  char ssid[] = "telenet-replica"; //  your network SSID (name)
+  char pass[] = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
+  int keyIndex = 0;            // your network key Index number (needed only for WEP)
+  // WiFi status
+  int status = WL_IDLE_STATUS;
+*/
 
 void initiateWifi() {
   //change pins for feather
@@ -44,6 +44,7 @@ void initiateWifi() {
 
 void printWifiStatus() {
   // print the SSID of the network you're attached to:
+
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID());
 
@@ -57,4 +58,12 @@ void printWifiStatus() {
   Serial.print("signal strength (RSSI):");
   Serial.print(rssi);
   Serial.println(" dBm");
+}
+
+String IpAddress2String(const IPAddress& ipAddress)
+{
+  return String(ipAddress[0]) + String(".") + \
+         String(ipAddress[1]) + String(".") + \
+         String(ipAddress[2]) + String(".") + \
+         String(ipAddress[3])  ;
 }

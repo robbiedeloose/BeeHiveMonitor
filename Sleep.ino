@@ -34,6 +34,8 @@ void checkIfRebootIsNeeded() {
   epochTime = rtc.getEpoch();
   if( epochTime > epochNextReboot){
     Serial.println("Ready to reboot");
+    delay(2000);
+    resetFunc(); //call reset 
   }
   else{
      Serial.println("Ready timer not yet reached");

@@ -1,13 +1,8 @@
 void setupSdCard() {
 
-
-
-
-
   // Setup the SD card
-
   didReadConfig = false;
- 
+
   Serial.println("Calling SD.begin()...");
   if (!SD.begin(pinSelectSD)) {
     Serial.println("SD.begin() failed. Check: ");
@@ -17,10 +12,7 @@ void setupSdCard() {
     return;
   }
   Serial.println("...succeeded.");
-
-  // Read our configuration from the SD card file.
   delay(2000);
-  // didReadConfig = readConfiguration();
 }
 
 boolean readConfiguration() {
@@ -80,7 +72,7 @@ boolean readConfiguration() {
       }
     }
 
- else if (cfg.nameIs("scalesConnected")) {
+    else if (cfg.nameIs("scalesConnected")) {
       scale = cfg.getBooleanValue();
       Serial.print("Read doDelay: ");
       if (scale) {
@@ -232,8 +224,6 @@ void logToSdCard() {
       delay(200);
 
       logFile.close();
-
-
     }
 
     // if the file isn't open, pop up an error:
@@ -244,3 +234,64 @@ void logToSdCard() {
 
   }
 }
+
+void logReboot() {
+  String fileName = "AppLog.txt";
+  String line;
+  File logFile = SD.open(fileName, FILE_WRITE);
+  if (logFile) {
+    Serial.println("Writing to " + fileName);
+    Serial.println("----------------------");
+    logFile.println("REBOOT !");
+
+    line = ("Date: ");
+    line += createDateTimeString();
+    logFile.println(line);
+    Serial.println(line);
+
+    line = ("Connected to: ");
+    line += WiFi.SSID();
+    logFile.println(line);
+    Serial.println(line);
+
+    IPAddress ip = WiFi.localIP();
+    line = "Ip: ";
+    line += IpAddress2String(ip);
+    logFile.println(line);
+    Serial.println(line);
+
+    long rssi = WiFi.RSSI();
+    line = "signal strength (RSSI): ";
+    line += rssi;
+    line += " dBm";
+    logFile.println(line);
+    Serial.println(line);
+
+    Serial.println("----------------------");
+    delay(200);
+    logFile.close();
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.print("error opening ");
+    Serial.println(fileName);
+  }
+}
+
+void applicationLog(String logMessage) {
+  String fileName = "AppLog.txt";
+  File logFile = SD.open(fileName, FILE_WRITE);
+  if (logFile) {
+    Serial.println("Writing to " + fileName);
+    Serial.println(logMessage);
+    logFile.println(logMessage);
+    delay(200);
+    logFile.close();
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.print("error opening ");
+    Serial.println(fileName);
+  }
+}
+

@@ -96,7 +96,7 @@ time_t epochNextReboot;
 
 // sleep & debug
 boolean sleep = false;
-boolean debug = true;
+boolean debug = false;
 int i = 0;
 
 // Sensors
@@ -135,7 +135,7 @@ const char CONFIG_FILE[] = "singleHive.cfg";
        if false, don't delay.
      waitMs = time (milliseconds) to wait after printing hello.
 */
-boolean didReadConfig;
+boolean didReadConfig = false;
 boolean readConfiguration();
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -143,27 +143,30 @@ boolean readConfiguration();
 void setup() {
 
   delay(5000);
-
   //Set pinmodes
   pinMode(LED, OUTPUT);
   pinMode(DEBUGPIN, INPUT);
   pinMode (BATTERYVOLTAGE, INPUT);
   pinMode (BATTERYVOLTAGE2, INPUT);
+  pinMode(pinSelectSD, OUTPUT);
 
   // Start Serial
   Serial.begin(9600);
   delay(2000);
-  //read sd first, the choose the correct startup actions
-  pinMode(pinSelectSD, OUTPUT);
-  didReadConfig = false;
 
-  Serial.println();
+  // start sd card
   Serial.println("-- Starting SD Card");
   setupSdCard();
-
+  //read sd first, the choose the correct startup actions
   Serial.println("-- Reading configuration data from SD card");
   didReadConfig = readConfiguration();
-  Serial.println("Done!");
+
+  if (didReadConfig) {
+    applicationLog("-- Read settings from SD config file");
+  } else {
+    applicationLog("-- Unable to read settings file from SD card");
+  }
+
 
   Wire.begin();       // join i2c bus for wind sensor and other I2C sensors
   sensors.begin();    // Start up the DallasTemperature library
@@ -188,6 +191,8 @@ void setup() {
   Serial.println("set wifi power mode");
   WiFi.lowPowerMode();
 
+  logReboot();
+
   //  Serial.println("start bmp180");
   //
   //  // Initialize the sensor (it is important to get calibration values stored on the device).
@@ -204,8 +209,9 @@ void setup() {
   //    Serial.println("BMP180 init fail\n\n");
   //    //while(1); // Pause forever.
   //  }
-
 }
+
+void(* resetFunc) (void) = 0;//declare reset function at address 0
 
 void loop() {
 

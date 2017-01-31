@@ -76,6 +76,23 @@ void getTimeFromWeb (Client &client)
   client.stop();
 }
 
-
+String createDateTimeString() {
+  String dateAndTime;
+  dateAndTime = days;
+  dateAndTime += "/";
+  dateAndTime += months;
+  dateAndTime += "/";
+  dateAndTime += years;
+  dateAndTime += " ";
+  dateAndTime += hours;
+  dateAndTime += ":";
+  if (minutes < 10) {
+    dateAndTime += '0';
+    dateAndTime += minutes;
+  }else{
+    dateAndTime += minutes;
+  }
+  return dateAndTime;
+}
 
 
