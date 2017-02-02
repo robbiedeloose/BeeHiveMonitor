@@ -70,6 +70,21 @@ char server[] = "data.sparkfun.com"; // Remote host site
 const String publicWeatherKey = "wpjxZLXmDwTrprnEwl1o";
 const String privateWeatherKey = "wzEPBlDjyZUzqzgD9RWl";
 
+DeviceAddress hive_1_1;
+DeviceAddress hive_1_2;
+DeviceAddress hive_1_3;
+DeviceAddress hive_2_1;
+DeviceAddress hive_2_2;
+DeviceAddress hive_2_3;
+DeviceAddress hive_3_1;
+DeviceAddress hive_3_2;
+DeviceAddress hive_3_3;
+DeviceAddress hive_1[3];
+DeviceAddress hive_2[3];
+DeviceAddress hive_3[3];
+
+
+
 // Config
 int hives = 1;
 String hiveName[] = {"Hive1", "Hive2"};
