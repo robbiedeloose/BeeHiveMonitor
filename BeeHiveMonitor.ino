@@ -113,6 +113,9 @@ float weather_humidity = 0; //HTU21D
 float weather_temp = 0; // HTU21D
 double weather_pressure = 0;
 float hive_temp[15]; //DS2
+float hive_1_temp [3]; // ds 2 sensors for hive 1
+float hive_2_temp [3]; // ds 2 sensors for hive 2
+float hive_3_temp [3]; // ds 2 sensors for hive 3
 float hive_humidity[3] = {0, 0, 0}; //DHT22
 float system_bat = 0;
 float system_bat2 = 0;
