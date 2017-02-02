@@ -55,19 +55,37 @@ void postDataToSparkFun()
       Serial.print("max: ");
       Serial.println(max);
 
-      for (int y = min; y < max; y++) {
-        Serial.print("z: ");
-        Serial.println(z);
-        Serial.print("y: ");
-        Serial.println(y);
-        client.print("&");
-        client.print("temperature_");
-        client.print(z);
-        client.print("=");
-        client.print(hive_temp[y]);
-        z++;
-      }
-
+      
+        
+       if (x==0){
+        //print Hive 1 data
+           for (int index = 0;  < 3; y++) {
+               client.print("&");
+               client.print("temperature_");
+               client.print(z);
+               client.print("=");
+               client.print(hive_1_temp[y]);
+           }
+       } else if (x==1){
+          //print Hive 2 data 
+            for (int index = 0;  < 3; y++) {
+               client.print("&");
+               client.print("temperature_");
+               client.print(z);
+               client.print("=");
+               client.print(hive_2_temp[y]);
+           }
+       } else if (x==2){
+          //print Hive 3 data
+            for (int index = 0;  < 3; y++) {
+               client.print("&");
+               client.print("temperature_");
+               client.print(z);
+               client.print("=");
+               client.print(hive_3_temp[y]);
+           }
+       }
+   
       client.print("&");
       client.print("humidity_outside");
       client.print("=");
