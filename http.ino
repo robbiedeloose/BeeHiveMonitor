@@ -62,6 +62,7 @@ void postDataToSparkFun()
            for (int index = 0;  < 3; y++) {
                client.print("&");
                client.print("temperature_");
+                int z = y + 1;
                client.print(z);
                client.print("=");
                client.print(hive_1_temp[y]);
@@ -71,6 +72,7 @@ void postDataToSparkFun()
             for (int index = 0;  < 3; y++) {
                client.print("&");
                client.print("temperature_");
+              int z = y + 1;
                client.print(z);
                client.print("=");
                client.print(hive_2_temp[y]);
@@ -80,6 +82,7 @@ void postDataToSparkFun()
             for (int index = 0;  < 3; y++) {
                client.print("&");
                client.print("temperature_");
+              int z = y + 1;
                client.print(z);
                client.print("=");
                client.print(hive_3_temp[y]);
