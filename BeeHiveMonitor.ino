@@ -53,6 +53,7 @@ DHT dht1(DHTPIN1, DHTTYPE);
 
 // Wifi
 boolean useWifi = true;
+//char *ssid = "dd-wrt"; //  your network SSID (name)
 char *ssid = "telenet-replica"; //  your network SSID (name)
 char *pass = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
@@ -96,7 +97,7 @@ time_t epochNextReboot;
 
 // sleep & debug
 boolean sleep = false;
-boolean debug = false;
+boolean debug = true;
 int i = 0;
 
 // Sensors
@@ -178,7 +179,7 @@ void setup() {
 
   Serial.println("-- Set Debug Level");
   //setDebug();         // Check if debug is enabled (pin 10 low)
-  debug = true;
+  //debug = true;
   delay(10000);        // Allow some time before sleep to be able to reprogram te board if needed
 
   Serial.println("----- Get Time From the Web");
@@ -215,34 +216,38 @@ void(* resetFunc) (void) = 0;//declare reset function at address 0
 
 void loop() {
 
-  Serial.println("Going Through Loop");
-  debugMessage(1, 200); // going throug loop
+  if (sleep == false) {
+    Serial.println("Going Through Loop");
+    debugMessage(1, 200); // going throug loop
+    applicationLog("loop");
 
-  //  /*  Check incomming HTTP:  */
-  //  while (client.available()) {
-  //    char c = client.read();
-  //    Serial.write(c);
-  //  }
-  //
-  //  if (sleep == false) {
-  //    if (loopCount == interval) {
-  //      Serial.println("Do Stuff");
-  //
-  //      if (debug == false)
-  //      {
-  //        if (debug) {
-  //          Serial.println("Sleeping");
-  //        }
+    //  /*  Check incomming HTTP:  */
+    //  while (client.available()) {
+    //    char c = client.read();
+    //    Serial.write(c);
+    //  }
+    //
+    //  if (sleep == false) {
+    //    if (loopCount == interval) {
+    //      Serial.println("Do Stuff");
+    //
+    //      if (debug == false)
+    //      {
+    //        if (debug) {
+    //          Serial.println("Sleeping");
+    //        }
 
-  doStuf();
-  checkIfRebootIsNeeded();
+    doStuf();
+    checkIfRebootIsNeeded();
 
-  // Delay for 60 seconds if debug is enabled, sleep otherwise
-  if (debug == true) {
-    delay(60000);
-  }
-  else {
-    rtc.standbyMode();
+    // Delay for 60 seconds if debug is enabled, sleep otherwise
+    if (debug == true) {
+      delay(60000);
+    }
+    else {
+      sleep = true;
+      rtc.standbyMode();
+    }
   }
 
 

@@ -16,14 +16,16 @@ void setRtc() {
 
 void alarmMatch()
 {
-  if (debug) {
-    Serial.println("alarm triggered");
-  }
+  //  applicationLog("alarm matched");
+  //  if (debug) {
+  //    Serial.println("alarm triggered");
+  //  }
   sleep = false;
+  //
 }
 
 void setNextReboot() {
-  epochNextReboot = rtc.getEpoch() + 100;
+  epochNextReboot = rtc.getEpoch() + 86400;
   if (debug) {
     Serial.print("Current Epoch time: "); Serial.println(rtc.getEpoch());
     Serial.print("Next reboot: "); Serial.println(epochNextReboot);
@@ -32,12 +34,12 @@ void setNextReboot() {
 
 void checkIfRebootIsNeeded() {
   epochTime = rtc.getEpoch();
-  if( epochTime > epochNextReboot){
+  if ( epochTime > epochNextReboot) {
     Serial.println("Ready to reboot");
     delay(2000);
-    resetFunc(); //call reset 
+    resetFunc(); //call reset
   }
-  else{
-     Serial.println("Ready timer not yet reached");
+  else {
+    Serial.println("Reboot timer not yet reached");
   }
 }

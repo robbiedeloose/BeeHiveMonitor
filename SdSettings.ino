@@ -193,7 +193,11 @@ void logToSdCard() {
 
       Serial.println("Writing to " + fileName);
 
+      dataString += createDateTimeString();
+      dataString += ",";
+
       //wheater temperature
+
       dataString += weather_temp;
       dataString += ",";
 
@@ -217,6 +221,9 @@ void logToSdCard() {
       dataString += ",";
 
       dataString += system_bat;
+      dataString += ",";
+
+        dataString += system_bat2;
       dataString += ",";
 
       Serial.println(dataString);
