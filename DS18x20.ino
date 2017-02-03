@@ -75,16 +75,21 @@ void alternateReadDsSensors()
   if (debug) {
     Serial.println();
     Serial.println("DEBUG: Alternate DS2 sensors:");
-    }
+  }
   Serial.print("Requesting temperatures...");
   sensors.requestTemperatures(); // Send the command to get temperatures
   delay(1000);
   Serial.println("DONE");
- 
-  hive_1_temp[0] = sensors.getTempC(hive_1_1);
-  hive_1_temp[1] = sensors.getTempC(hive_1_2);
-  hive_1_temp[2] = sensors.getTempC(hive_1_3);
 
+  hive_1_temp[0] = sensors.getTempC(hive_1_1);
+  delay(250);
+  hive_1_temp[1] = sensors.getTempC(hive_1_2);
+  delay(250);
+  hive_1_temp[2] = sensors.getTempC(hive_1_3);
+  delay(250);
+  Serial.println(hive_1_temp[0]);
+  Serial.println(hive_1_temp[1]);
+  Serial.println(hive_1_temp[2]);
 }
 
 

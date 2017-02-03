@@ -59,33 +59,33 @@ void postDataToSparkFun()
         
        if (x==0){
         //print Hive 1 data
-           for (int index = 0;  < 3; y++) {
+           for (int index = 0; index < 3; index++) {
                client.print("&");
                client.print("temperature_");
-                int z = y + 1;
+                int z = index + 1;
                client.print(z);
                client.print("=");
-               client.print(hive_1_temp[y]);
+               client.print(hive_1_temp[index]);
            }
        } else if (x==1){
           //print Hive 2 data 
-            for (int index = 0;  < 3; y++) {
+            for (int index = 0; index < 3; index++) {
                client.print("&");
                client.print("temperature_");
-              int z = y + 1;
+              int z = index + 1;
                client.print(z);
                client.print("=");
-               client.print(hive_2_temp[y]);
+               client.print(hive_2_temp[index]);
            }
        } else if (x==2){
           //print Hive 3 data
-            for (int index = 0;  < 3; y++) {
+            for (int index = 0; index < 3; index++) {
                client.print("&");
                client.print("temperature_");
-              int z = y + 1;
+              int z = index + 1;
                client.print(z);
                client.print("=");
-               client.print(hive_3_temp[y]);
+               client.print(hive_3_temp[index]);
            }
        }
    

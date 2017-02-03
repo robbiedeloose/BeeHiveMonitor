@@ -70,9 +70,9 @@ char server[] = "data.sparkfun.com"; // Remote host site
 const String publicWeatherKey = "wpjxZLXmDwTrprnEwl1o";
 const String privateWeatherKey = "wzEPBlDjyZUzqzgD9RWl";
 
-DeviceAddress hive_1_1;
-DeviceAddress hive_1_2;
-DeviceAddress hive_1_3;
+DeviceAddress hive_1_1 = { 0x28, 0xFF, 0x4C, 0xB8, 0x92, 0x16, 0x04, 0x4D }; 
+DeviceAddress hive_1_2 = { 0x28, 0xFF, 0x93, 0xEE, 0x89, 0x16, 0x03, 0xA5 };
+DeviceAddress hive_1_3 = { 0x28, 0xFF, 0x3F, 0x0B, 0x8A, 0x16, 0x03, 0x9B };
 DeviceAddress hive_2_1;
 DeviceAddress hive_2_2;
 DeviceAddress hive_2_3;
@@ -131,6 +131,7 @@ float hive_temp[15]; //DS2
 float hive_1_temp [3]; // ds 2 sensors for hive 1
 float hive_2_temp [3]; // ds 2 sensors for hive 2
 float hive_3_temp [3]; // ds 2 sensors for hive 3
+float hives_temp [3][3] = {{0,0,0},{0,0,0},{0,0,0}};
 float hive_humidity[3] = {0, 0, 0}; //DHT22
 float system_bat = 0;
 float system_bat2 = 0;
@@ -281,7 +282,8 @@ void doStuf() {
 
   // READ HIVE TEMPERATURES
   //readDS2Sensors();
-  readDsSensors();
+  //readDsSensors();
+  alternateReadDsSensors();
 
   // READ HIVE HUMIDITY
   readDhtSensors();
