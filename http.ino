@@ -5,7 +5,7 @@ void postDataToSparkFun()
   Serial.print(hives);
   Serial.println(" hives");
 
-  for (int x = 0; x < hives; x++) {
+  for (int hive = 0; hive < hives; hive++) {
 
     if (client.connect(server, 80))
     {
@@ -17,9 +17,9 @@ void postDataToSparkFun()
       // Connection: close\n
       // \n
       client.print("GET /input/");
-      client.print(publicKey[x]);
+      client.print(publicKey[hive]);
       client.print("?private_key=");
-      client.print(privateKey[x]);
+      client.print(privateKey[hive]);
 
       /*for (int i=0; i<NUM_FIELDS; i++)
         {
@@ -37,58 +37,23 @@ void postDataToSparkFun()
       client.print("&");
       client.print("hive");
       client.print("=");
-      client.print(hiveName[x]);
+      client.print(hiveName[hive]);
 
       client.print("&");
       client.print("temperature_outside");
       client.print("=");
       client.print(weather_temp);
 
-      // calculate sensor id
-      int max = (x + 1) * sensorsPerHive;
-      int min = max - (sensorsPerHive);
-      int z = 1;
-      Serial.print("x: ");
-      Serial.println(x);
-      Serial.print("min: ");
-      Serial.println(min);
-      Serial.print("max: ");
-      Serial.println(max);
+      //print relevant DS sensors for this hive
+      for (int sensor = 0; sensor < 3; sensor++) {
+        client.print("&");
+        client.print("temperature_");
+        int z = sensor + 1;
+        client.print(z);
+        client.print("=");
+        client.print(hives_temp[hive][sensor]);
+      }
 
-      
-        
-       if (x==0){
-        //print Hive 1 data
-           for (int index = 0; index < 3; index++) {
-               client.print("&");
-               client.print("temperature_");
-                int z = index + 1;
-               client.print(z);
-               client.print("=");
-               client.print(hive_1_temp[index]);
-           }
-       } else if (x==1){
-          //print Hive 2 data 
-            for (int index = 0; index < 3; index++) {
-               client.print("&");
-               client.print("temperature_");
-              int z = index + 1;
-               client.print(z);
-               client.print("=");
-               client.print(hive_2_temp[index]);
-           }
-       } else if (x==2){
-          //print Hive 3 data
-            for (int index = 0; index < 3; index++) {
-               client.print("&");
-               client.print("temperature_");
-              int z = index + 1;
-               client.print(z);
-               client.print("=");
-               client.print(hive_3_temp[index]);
-           }
-       }
-   
       client.print("&");
       client.print("humidity_outside");
       client.print("=");
@@ -97,7 +62,7 @@ void postDataToSparkFun()
       client.print("&");
       client.print("humidity_inside");
       client.print("=");
-      client.print(hive_humidity[x]);
+      client.print(hive_humidity[hive]);
 
       client.print("&");
       client.print("weight");

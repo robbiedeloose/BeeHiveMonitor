@@ -81,15 +81,16 @@ void alternateReadDsSensors()
   delay(1000);
   Serial.println("DONE");
 
-  hive_1_temp[0] = sensors.getTempC(hive_1_1);
+  hives_temp [0][0] = sensors.getTempC(hive_1_1);
   delay(250);
-  hive_1_temp[1] = sensors.getTempC(hive_1_2);
+  hives_temp [0][1] = sensors.getTempC(hive_1_2);
   delay(250);
-  hive_1_temp[2] = sensors.getTempC(hive_1_3);
+  hives_temp [0][2] = sensors.getTempC(hive_1_3);
   delay(250);
-  Serial.println(hive_1_temp[0]);
-  Serial.println(hive_1_temp[1]);
-  Serial.println(hive_1_temp[2]);
+  
+  Serial.println(hives_temp [0][0]);
+  Serial.println(hives_temp [0][1]);
+  Serial.println(hives_temp [0][2]);
 }
 
 
