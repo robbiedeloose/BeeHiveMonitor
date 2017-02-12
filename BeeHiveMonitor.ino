@@ -1,39 +1,33 @@
-#include <Wire.h> // I2C library
-// RTC - MKR1000
+  #include <Wire.h> // I2C library
 #include <RTCZero.h> // RealTimeClock for sleep 
-// RTC - Adafruit Feather M0 WiFi
-//#include <RTClib.h>
+#include <RTClib.h>
 #include <SPI.h>
-// Wifi - same for MKR1000 and Adafruit Feather M0 WiFi
 #include <WiFi101.h>
-#include <WiFiUdp.h>
-
 #include <SD.h>
 #include <SDConfigFile.h>
-
 #include <OneWire.h> // for DS18 sensors
 #include <DallasTemperature.h>  // for DS18 sensors
-#include <SFE_BMP180.h> // pressure
 #include <SHT2x.h> // weather humidity
 #include <DHT.h> // hive humidity
 
-///////////////// !!!!! PINS !!!!! /////////////////////////
-#define ONE_WIRE_BUS A5 // Digital pin for OneWire sensor
-// LED13 on feather LED 6 on MKR
-#define LED 13 // Led Pin
-#define DEBUGPIN A0 // pin for debug switch  
-#define BATTERYVOLTAGE A7// pin for voltage divider
-#define BATTERYVOLTAGE2 A1 // pin for 12v 
-#define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
-#define DHTPIN1 A2 // what digital pin we're connected to
-//#define DHTPIN2 A3 // what digital pin we're connected to
-//#define DHTPIN3 A4 // what digital pin we're connected to
-#define SCALE1_CLK 11
-#define SCALE1_DTA 12
-//#define SCALE2_CLK 5
-//#define SCALE2_DTA 6
-//#define SCALE3_CLK 0
-//#define SCALE3_DTA 1
+///////////////// !!!!! PINS !!!!! ///////////////////////////////////////////////
+#define ONE_WIRE_BUS A5 // Digital pin for OneWire sensor                       //
+// LED13 on feather LED 6 on MKR                                                //
+#define LED 13 // Led Pin                                                       //
+#define DEBUGPIN A0 // pin for debug switch                                     //
+#define BATTERYVOLTAGE A7// pin for voltage divider                             //
+#define BATTERYVOLTAGE2 A1 // pin for 12v                                       //
+#define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters     //
+#define DHTPIN1 A2 // what digital pin we're connected to                       //
+//#define DHTPIN2 A3 // what digital pin we're connected to                     //
+//#define DHTPIN3 A4 // what digital pin we're connected to                     //
+#define SCALE1_CLK 11                                                           //
+#define SCALE1_DTA 12                                                           //
+//#define SCALE2_CLK 5                                                          //
+//#define SCALE2_DTA 6                                                          //
+//#define SCALE3_CLK 0                                                          //
+//#define SCALE3_DTA 1                                                          //
+//////////////////////////////////////////////////////////////////////////////////
 
 #define ALTITUDE 0.0 // Altitude of SparkFun's HQ in Boulder, CO. in meters
 #define DHTTYPE DHT22 // DHT 22  (AM2302), AM2321
@@ -42,19 +36,17 @@ WiFiClient client; // network client
 RTCZero rtc; // real time clock instance
 OneWire ourWire(ONE_WIRE_BUS); // Set up a oneWire instance to communicate with any OneWire device
 DallasTemperature sensors(&ourWire); // Tell Dallas Temperature Library to use oneWire Library
-SFE_BMP180 pressure;
 
 DHT dht1(DHTPIN1, DHTTYPE);
 //DHT dht2(DHTPIN2, DHTTYPE);
 //DHT dht3(DHTPIN3, DHTTYPE);
-
 
 ////// Config variables //////
 
 // Wifi
 boolean useWifi = true;
 //char *ssid = "dd-wrt"; //  your network SSID (name)
-char *ssid = "telenet-replica"; //  your network SSID (name)
+char *ssid = "dd-wrt"; //  your network SSID (name)
 char *pass = "newyork20newyork15";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 boolean useGprs = false;
@@ -70,7 +62,7 @@ char server[] = "data.sparkfun.com"; // Remote host site
 const String publicWeatherKey = "wpjxZLXmDwTrprnEwl1o";
 const String privateWeatherKey = "wzEPBlDjyZUzqzgD9RWl";
 
-DeviceAddress hive_1_1 = { 0x28, 0xFF, 0x4C, 0xB8, 0x92, 0x16, 0x04, 0x4D }; 
+DeviceAddress hive_1_1 = { 0x28, 0xFF, 0x4C, 0xB8, 0x92, 0x16, 0x04, 0x4D };
 DeviceAddress hive_1_2 = { 0x28, 0xFF, 0x93, 0xEE, 0x89, 0x16, 0x03, 0xA5 };
 DeviceAddress hive_1_3 = { 0x28, 0xFF, 0x3F, 0x0B, 0x8A, 0x16, 0x03, 0x9B };
 DeviceAddress hive_2_1;
@@ -79,11 +71,6 @@ DeviceAddress hive_2_3;
 DeviceAddress hive_3_1;
 DeviceAddress hive_3_2;
 DeviceAddress hive_3_3;
-DeviceAddress hive_1[3];
-DeviceAddress hive_2[3];
-DeviceAddress hive_3[3];
-
-
 
 // Config
 int hives = 1;
@@ -92,7 +79,6 @@ int sensorsPerHive = 3;
 boolean scale = false;
 boolean weatherStation = false;
 int interval = 5; // in minuten
-int loopCount = 0;
 
 const String boardType = "feather"; // feather
 
@@ -126,12 +112,11 @@ int weather_lux = 0; // not there yet
 float weather_rainfall = 0; // not there yet
 float weather_humidity = 0; //HTU21D
 float weather_temp = 0; // HTU21D
-double weather_pressure = 0;
 float hive_temp[15]; //DS2
 float hive_1_temp [3]; // ds 2 sensors for hive 1
 float hive_2_temp [3]; // ds 2 sensors for hive 2
 float hive_3_temp [3]; // ds 2 sensors for hive 3
-float hives_temp [3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+float hives_temp [3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 float hive_humidity[3] = {0, 0, 0}; //DHT22
 float system_bat = 0;
 float system_bat2 = 0;
@@ -158,26 +143,22 @@ const char CONFIG_FILE[] = "singleHive.cfg";
 boolean didReadConfig = false;
 boolean readConfiguration();
 
+String httpData;
+String sdData;
+
 /////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
 
-  delay(5000);
-  //Set pinmodes
-  pinMode(LED, OUTPUT);
-  pinMode(DEBUGPIN, INPUT);
-  pinMode (BATTERYVOLTAGE, INPUT);
-  pinMode (BATTERYVOLTAGE2, INPUT);
-  pinMode(pinSelectSD, OUTPUT);
-
-  // Start Serial
   Serial.begin(9600);
   delay(2000);
+  Serial.println("Reprogram windows: 10 seconds");
+  delay(100000);
 
-  // start sd card
+  setPinmodes();
+
   Serial.println("-- Starting SD Card");
-  setupSdCard();
-  //read sd first, the choose the correct startup actions
+  setupSdCard(); // start sd card
   Serial.println("-- Reading configuration data from SD card");
   didReadConfig = readConfiguration();
 
@@ -196,11 +177,6 @@ void setup() {
   initiateWifi();     // Start Wifi Connection
   Serial.println();
 
-  Serial.println("-- Set Debug Level");
-  //setDebug();         // Check if debug is enabled (pin 10 low)
-  //debug = true;
-  delay(10000);        // Allow some time before sleep to be able to reprogram te board if needed
-
   Serial.println("----- Get Time From the Web");
   getTimeFromWeb(client);
 
@@ -211,24 +187,7 @@ void setup() {
   Serial.println("set wifi power mode");
   WiFi.lowPowerMode();
 
-  logReboot();
-
-  //  Serial.println("start bmp180");
-  //
-  //  // Initialize the sensor (it is important to get calibration values stored on the device).
-  //
-  //  if (pressure.begin()) {
-  //    delay(1000);
-  //    Serial.println("BMP180 init success");
-  //  }
-  //  else
-  //  {
-  //    // Oops, something went wrong, this is usually a connection problem,
-  //    // see the comments at the top of this sketch for the proper connections.
-  //
-  //    Serial.println("BMP180 init fail\n\n");
-  //    //while(1); // Pause forever.
-  //  }
+  logRebootInfoToSdCard();
 }
 
 void(* resetFunc) (void) = 0;//declare reset function at address 0
@@ -239,26 +198,8 @@ void loop() {
     Serial.println("Going Through Loop");
     debugMessage(1, 200); // going throug loop
     applicationLog("loop");
-
-    //  /*  Check incomming HTTP:  */
-    //  while (client.available()) {
-    //    char c = client.read();
-    //    Serial.write(c);
-    //  }
-    //
-    //  if (sleep == false) {
-    //    if (loopCount == interval) {
-    //      Serial.println("Do Stuff");
-    //
-    //      if (debug == false)
-    //      {
-    //        if (debug) {
-    //          Serial.println("Sleeping");
-    //        }
-
     doStuf();
     checkIfRebootIsNeeded();
-
     // Delay for 60 seconds if debug is enabled, sleep otherwise
     if (debug == true) {
       delay(60000);
@@ -268,45 +209,21 @@ void loop() {
       rtc.standbyMode();
     }
   }
-
-
-  //      }
-  //      loopCount = 0;
-  //    }
-  //    loopCount ++;
-  //  }
 }
 
 void doStuf() {
+
   debugMessage(5, 100);
+  alternateReadDsSensors(); // READ HIVE TEMPERATURES
+  readDhtSensors(); // READ HIVE HUMIDITY
+  readHTU21D(); // READ WEATHER DATA --> TEMP AND HUMIDITY
 
-  // READ HIVE TEMPERATURES
-  //readDS2Sensors();
-  //readDsSensors();
-  alternateReadDsSensors();
+  readBattery(); // READ BATTERY VOLTAGE
+  readBattery2(); // READ BATTERY VOLTAGE
 
-  // READ HIVE HUMIDITY
-  readDhtSensors();
+  logToSdCard(); // log to SD card
+  postDataToSparkFun(); // send to the internet
 
-  // READ WEATHER DATA --> TEMP AND HUMIDITY
-  readHTU21D();
-
-  // READ PRESSURE --> NOT USED ATM
-  //readBmp180();
-
-  // READ WIND DATA --> NOT USED ATM
-  //readWind();
-
-  // READ BATTERY VOLTAGE
-  readBattery();
-  readBattery2();
-
-  // log to SD card
-  logToSdCard();
-
-  // send to the internet
-  postDataToSparkFun();
   delay(1000);
+
 }
-
-

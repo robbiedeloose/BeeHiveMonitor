@@ -7,7 +7,7 @@ void setupSdCard() {
   if (!SD.begin(pinSelectSD)) {
     Serial.println("SD.begin() failed. Check: ");
     Serial.println("  card insertion,");
-    Serial.println("  SD shield I/O pins and chip select,");
+    Serial.println("  SD shield I/O pins alnd chip select,");
     Serial.println("  card formatting.");
     return;
   }
@@ -183,7 +183,7 @@ void logToSdCard() {
     // open the file. note that only one file can be open at a time,
     // so you have to close this one before opening another.
     String dataString = "";
-    String fileName = "hive" + hive + "-"  + String(months) + ".txt";
+    String fileName = hiveName[hive] + "-"  + String(months) + ".txt";
 
     File logFile = SD.open(fileName, FILE_WRITE);
 
@@ -199,17 +199,14 @@ void logToSdCard() {
       dataString += weather_temp;
       dataString += ",";
 
-      int z = 1;
-
       for (int sensor = 0; sensor < 3; sensor++) {
-        dataString += hive_temp[y];
+        dataString += hives_temp[hive][sensor];
         dataString += ",";
-        z++;
       }
 
       dataString += weather_humidity;
       dataString += ",";
-      dataString += hive_humidity[x];
+      dataString += hive_humidity[hive];
       dataString += ",";
       //hive weight
       dataString += "-";
@@ -237,7 +234,7 @@ void logToSdCard() {
   }
 }
 
-void logReboot() {
+void logRebootInfoToSdCard() {
   String fileName = "AppLog.txt";
   String line;
   File logFile = SD.open(fileName, FILE_WRITE);

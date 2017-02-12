@@ -2,13 +2,10 @@ void initiateDsSensors() {
   // Start up the library
   sensors.begin();
   delay(1000);
-  // Grab a count of devices on the wire
-  // Grab a count of devices on the wire
   numberOfDevices = sensors.getDeviceCount();
 
   // locate devices on the bus
   Serial.print("Locating devices...");
-
   Serial.print("Found ");
   Serial.print(numberOfDevices, DEC);
   Serial.println(" devices.");
@@ -18,6 +15,7 @@ void initiateDsSensors() {
   if (sensors.isParasitePowerMode()) Serial.println("ON");
   else Serial.println("OFF");
   delay(1000);
+  
   // Loop through each device, print out address
   for (int i = 0; i < numberOfDevices; i++)
   {
@@ -37,35 +35,6 @@ void initiateDsSensors() {
     delay(1000);
   }
 }
-
-void readDsSensors()
-{
-  // call sensors.requestTemperatures() to issue a global temperature
-  // request to all devices on the bus
-
-  if (debug) {
-    Serial.println();
-    Serial.println("DEBUG: DS2 sensors:");
-    Serial.println("Number of hives: ");
-  }
-  Serial.print("Requesting temperatures...");
-  sensors.requestTemperatures(); // Send the command to get temperatures
-  delay(1000);
-  Serial.println("DONE");
-  // After we got the temperatures, we can print them here.
-  // We use the function ByIndex, and as an example get the temperature from the first sensor only.
-  // Loop through each device, print out address
-  for (int i = 0; i < numberOfDevices; i++)
-  {
-    // Search the wire for address
-    Serial.print("Temperature for the device 1 (index "); Serial.print(i); Serial.print(") is: ");
-    hive_temp[i] = sensors.getTempCByIndex(i);
-    Serial.println(hive_temp[i]);
-    delay(500);
-  }
-
-}
-
 
 void alternateReadDsSensors()
 {
@@ -87,7 +56,7 @@ void alternateReadDsSensors()
   delay(250);
   hives_temp [0][2] = sensors.getTempC(hive_1_3);
   delay(250);
-  
+
   Serial.println(hives_temp [0][0]);
   Serial.println(hives_temp [0][1]);
   Serial.println(hives_temp [0][2]);
