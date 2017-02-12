@@ -178,14 +178,12 @@ boolean readConfiguration() {
 
 void logToSdCard() {
 
-  for (int x = 0; x < hives; x++) {
+  for (int hive = 0; hive < hives; hive++) {
 
     // open the file. note that only one file can be open at a time,
     // so you have to close this one before opening another.
     String dataString = "";
-    String fileName = hiveName[x] + "-" + String(months) + ".txt";
-    //fileName = "datalog.txt";
-
+    String fileName = "hive" + hive + "-"  + String(months) + ".txt";
 
     File logFile = SD.open(fileName, FILE_WRITE);
 
@@ -201,12 +199,9 @@ void logToSdCard() {
       dataString += weather_temp;
       dataString += ",";
 
-      // calculate sensor id
-      int max = (x + 1) * sensorsPerHive;
-      int min = max - (sensorsPerHive);
       int z = 1;
 
-      for (int y = min; y < max; y++) {
+      for (int sensor = 0; sensor < 3; sensor++) {
         dataString += hive_temp[y];
         dataString += ",";
         z++;

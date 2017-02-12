@@ -66,6 +66,34 @@ void readDsSensors()
 
 }
 
+
+void alternateReadDsSensors()
+{
+  // call sensors.requestTemperatures() to issue a global temperature
+  // request to all devices on the bus
+
+  if (debug) {
+    Serial.println();
+    Serial.println("DEBUG: Alternate DS2 sensors:");
+  }
+  Serial.print("Requesting temperatures...");
+  sensors.requestTemperatures(); // Send the command to get temperatures
+  delay(1000);
+  Serial.println("DONE");
+
+  hives_temp [0][0] = sensors.getTempC(hive_1_1);
+  delay(250);
+  hives_temp [0][1] = sensors.getTempC(hive_1_2);
+  delay(250);
+  hives_temp [0][2] = sensors.getTempC(hive_1_3);
+  delay(250);
+  
+  Serial.println(hives_temp [0][0]);
+  Serial.println(hives_temp [0][1]);
+  Serial.println(hives_temp [0][2]);
+}
+
+
 // function to print a device address
 void printAddress(DeviceAddress deviceAddress)
 {
